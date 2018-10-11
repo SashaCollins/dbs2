@@ -1,0 +1,54 @@
+﻿<head>
+	<title>Fussballfans</title>
+	<meta charset="UTF-8"></meta>
+	<style>
+		h1{
+			font-family: Arial;
+			font-size: 50px;
+			text-align: center;
+			color: #228B22;
+		}
+		h3 {
+			font-family: Arial;
+			font-size: 30px;
+			text-align: center;
+			color: #228B22;
+		}
+		body, option, input {
+			font-family: Arial;
+			font-size: 20px;
+		}
+		body {
+			text-align: center;
+		}
+		button {
+			font-family: Arial;
+			font-size: 30px;
+			text-align: center;
+			height:50px;
+			width:120px;
+			border-radius: 12px;
+			color: white;
+			background-color: #4CAF50;
+		}
+	</style>
+</head>
+<body>
+	<h1>Wähle deinen Lieblingsverein!</h1>
+	<form /*action="/action_page.php"*/ method="get">
+		<select size=9>
+			<option value="bayern">Bayern München</option>
+			<option value="augsburg">FC Augsburg</option>
+			<option value="schalke">Schalke 04</option>
+			<option value="dortmund">Borussia Dortmund</option>
+			<option value="dresden">Dynamo Dresden</option>
+			<option value="leipzig">RB Leipzig</option>
+			<option value="1860">TSV 1860 München</option>
+		</select> 	
+	
+		<h3>Sag uns deinen Verein:</h3>
+		<input type="text" name="newVerein"><br><br>
+		<button type="submit" value=vote size=20 formmethod="post">Vote!</button> 
+	</form>
+	
+</body>
