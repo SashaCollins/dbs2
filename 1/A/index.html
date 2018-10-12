@@ -1,4 +1,5 @@
-﻿<head>
+﻿<html>
+<head>
 	<title>Fussballfans</title>
 	<meta charset="UTF-8"></meta>
 	<style>
@@ -47,7 +48,7 @@
 </head>
 <body>
 	<h1>Wähle deinen Lieblingsverein!</h1>
-	<form action="/validateClub.php" method="post">
+	<form action="/validateClub.php" method="POST">
 		<select id="vereine" size=8 onchange="checkCustom()">
 			<option value="bayern">Bayern München</option>
 			<option value="augsburg">FC Augsburg</option>
@@ -78,3 +79,4 @@
 		<button class="button buttonVote" type="submit" name="vote" size=20>Vote!</button>
 	</form>
 </body>
+</html>
