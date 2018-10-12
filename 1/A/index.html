@@ -48,8 +48,8 @@
 </head>
 <body>
 	<h1>Wähle deinen Lieblingsverein!</h1>
-	<form action="/validateClub.php" method="POST">
-		<select id="vereine" size=8 onchange="checkCustom()">
+	<form action="validateClub.php" method="POST">
+		<select name="club" id="clubs" size=8 onchange="checkCustom()">
 			<option value="bayern">Bayern München</option>
 			<option value="augsburg">FC Augsburg</option>
 			<option value="schalke">Schalke 04</option>
@@ -62,7 +62,7 @@
 	
 		<div id="custom" style="display: none;">
 			<h3>Sag uns deinen Verein:</h3>
-			<input type="text" name="newVerein" placeholder="Dein Verein">
+			<input type="text" name="newClub" placeholder="Dein Verein">
 		</div>
 		
 		<script>
