@@ -1,4 +1,26 @@
-﻿<html>
+﻿<?php
+require_once("dbCredentials.php");  // created variables to login
+require_once("dbConnect.php");
+
+$con = open_connection($servername, $username, $password, $database);
+
+$result = mysqli_query($con, "SELECT club_id, club_name FROM football_clubs");
+if (!$result)  {
+	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($connection)) . "'";
+}
+
+$output = "";
+while ($row = mysqli_fetch_assoc($result))  {
+	$id = $row['club_id'];
+	$name = $row['club_name'];
+	$output .= "\t\t\t<option value='$id'>$name</option>\n";
+}
+
+mysqli_free_result($result);
+mysqli_close($con);
+?>
+
+<html>
 <head>
 	<title>Fussballfans</title>
 	<meta charset="UTF-8"></meta>
@@ -49,15 +71,11 @@
 <body>
 	<h1>Wähle deinen Lieblingsverein!</h1>
 	<form action="validateClub.php" method="POST">
-		<select name="club" id="clubs" size=8 onchange="checkCustom()">
-			<option value="bayern">Bayern München</option>
-			<option value="augsburg">FC Augsburg</option>
-			<option value="schalke">Schalke 04</option>
-			<option value="dortmund">Borussia Dortmund</option>
-			<option value="dresden">Dynamo Dresden</option>
-			<option value="leipzig">RB Leipzig</option>
-			<option value="1860">TSV 1860 München</option>
-			<option value="other">Other</option>
+		<select name="club" id="clubs" size=7 onchange="checkCustom()">
+<?php
+			echo $output;
+?>
+			<option value='other'>Other</option>
 		</select>
 	
 		<div id="custom" style="display: none;">
