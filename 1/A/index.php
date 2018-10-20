@@ -6,7 +6,7 @@ $con = open_connection($servername, $username, $password, $database);
 
 $result = mysqli_query($con, "SELECT club_id, club_name FROM football_clubs");
 if (!$result)  {
-	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($connection)) . "'";
+	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($con)) . "'";
 }
 
 $output = "";
@@ -86,10 +86,11 @@ mysqli_close($con);
 		<script>
 			function checkCustom() {
 				var x = document.getElementById("clubs").value;
-				if(x=="other")
+				if(x=="other")  {
 					document.getElementById("custom").style.display="block";
-				else
+				}  else  {
 					document.getElementById("custom").style.display="none";
+				}
 			}
 		</script>
 		

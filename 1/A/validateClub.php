@@ -1,5 +1,4 @@
 <?php
-
 require_once("dbCredentials.php");  // created variables to login
 require_once("dbConnect.php");
 
@@ -10,7 +9,8 @@ if (!isset($_POST['club']))  {
 
 $con = open_connection($servername, $username, $password, $database);
 
-$club_id = $_POST['club'];
+// TODO Transactions and Prepared Statements
+$club_id = $_POST['club'];  // TODO if $club_id == 'other' || id not in Table (HTML Injection)
 $sql = "UPDATE football_clubs SET club_votes = club_votes + 1 WHERE club_id = $club_id";
 
 if (!mysqli_query($con, $sql)) {
@@ -29,7 +29,11 @@ $club_name = $row['club_name'];
 $vote = $row['club_votes'];
 $fans = $row['fans'];
 
-echo "Du hast erfolgreich für $club_name gestimmt.<br>
-		$club_name hat $vote Fans. :D <br>
-		Insgesamt haben $fans Fans abgestimmt.<br>";
+mysqli_free_result($sql_result);
+mysqli_close($con);
+
+echo "<center>Du hast erfolgreich für <b>$club_name</b> gestimmt!<br>
+<b>$club_name</b> hat bereits <b>$vote Fans</b>. :D <br>
+Insgesamt haben bereits $fans Personen abgestimmt.</center>";
+// TODO Proper HTML
 ?>

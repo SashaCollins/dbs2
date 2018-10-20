@@ -1,4 +1,4 @@
- <?php
+<?php
 if (!function_exists('check_db'))  {
 	// Check if the given database exists, if not try to create it.
 	function check_db($connection, $database)  {
@@ -52,6 +52,7 @@ if (!function_exists('init_football'))  {
 		
 		// We know about IF NOT EXISTS but we don't want to add the initial data too often
 		if (!$table_exits)  {
+			// TODO Transaction
 			$football_table = "CREATE TABLE `". $table_name ."` (
 			  `club_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			  `club_name` varchar(64) COLLATE utf8_german2_ci NOT NULL,
@@ -63,7 +64,9 @@ if (!function_exists('init_football'))  {
 			}
 			
 			// If Strings are not displayed correctly, open my.ini for mysql and uncomment all UTF8 config lines 
-			$football_insert = "INSERT INTO `football_clubs` (`club_id`, `club_name`, `club_votes`) VALUES (NULL, 'Bayern München', '0'), (NULL, 'FC Augsburg', '0'), (NULL, 'Schalke 04', '0'), (NULL, 'Borussia Dortmund', '0'), (NULL, 'Dynamo Dresden', '0'), (NULL, 'RB Leipzig', '0'), (NULL, 'TSV 1860 München', '0');";
+			$football_insert = "INSERT INTO `". $table_name ."` (`club_id`, `club_name`, `club_votes`) VALUES
+				(NULL, 'Bayern München', '0'), (NULL, 'FC Augsburg', '0'), (NULL, 'Schalke 04', '0'),
+				(NULL, 'Borussia Dortmund', '0'), (NULL, 'Dynamo Dresden', '0'), (NULL, 'RB Leipzig', '0'), (NULL, 'TSV 1860 München', '0');";
 			
 			if (!mysqli_query($connection, $football_insert))  {
 				die("An Error occurred while inserting Data into the Football Table. Error: '" . mysqli_error($connection)) . "'";
