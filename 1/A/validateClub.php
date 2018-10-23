@@ -17,7 +17,7 @@ if (!mysqli_query($con, $sql)) {
 	die("An Error occurred while updating the Football Table. Error: '" . mysqli_error($con)) . "'";
 }
 
-$sql = "SELECT club_name, club_votes, SUM(club_votes) as fans FROM football_clubs WHERE club_id = $club_id";
+$sql = "SELECT *, (SELECT SUM(`club_votes`) FROM football_clubs) as fans FROM football_clubs WHERE `club_id` = $club_id;";
 
 $sql_result = mysqli_query($con, $sql);
 if (!$sql_result) {
