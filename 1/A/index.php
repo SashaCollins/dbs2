@@ -82,20 +82,20 @@ mysqli_close($con);
 			<h3>Sag uns deinen Verein:</h3>
 			<input type="text" name="newClub" placeholder="Dein Verein">
 		</div>
-		
-		<script>
-			function checkCustom() {
-				var x = document.getElementById("clubs").value;
-				if(x=="other")  {
-					document.getElementById("custom").style.display="block";
-				}  else  {
-					document.getElementById("custom").style.display="none";
-				}
-			}
-		</script>
-		
 		<br><br>
 		<button class="button buttonVote" type="submit" name="vote" size=20>Vote!</button>
 	</form>
+	Die aktuellen Ergebnisse kannst du dir <a href="results.php" target="_blank">hier</a> ansehen.
+			
+	<script>
+		function checkCustom() {
+			var x = document.getElementById("clubs").value;
+			if(x=="other")  {
+				document.getElementById("custom").style.display="block";
+			}  else  {
+				document.getElementById("custom").style.display="none";
+			}
+		}
+	</script>
 </body>
 </html>

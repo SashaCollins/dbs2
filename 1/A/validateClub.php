@@ -41,8 +41,18 @@ mysqli_commit($con);
 // Unlock Database
 mysqli_close($con);
 
-echo "<center>Du hast erfolgreich für <b>$club_name</b> gestimmt!<br>
+$out = "<center>Du hast erfolgreich für <b>$club_name</b> gestimmt!<br>
 <b>$club_name</b> hat bereits <b>$club_votes Fans</b>. :D <br>
-Insgesamt haben bereits $fans Personen abgestimmt.</center>";
-// TODO Proper HTML
+Insgesamt haben bereits $fans Personen abgestimmt.<br /><br />
+<a href='results.php'>Hier</a> kannst du sehen, wie bislang abgestimmt wurde.</center>";
 ?>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title><?php echo (empty($out)) ? "Fehler ist aufgetreten!" : "Erfolgreich abgestimmt!" ?></title>
+	</head>
+	<body>
+		<?php echo $out; ?>
+	</body>
+</html>
