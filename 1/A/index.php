@@ -80,7 +80,7 @@ mysqli_close($con);
 	
 		<div id="custom" style="display: none;">
 			<h3>Sag uns deinen Verein:</h3>
-			<input type="text" name="newClub" placeholder="Dein Verein">
+			<input type="text" name="newClub" maxlength=64 placeholder="Dein Verein">
 		</div>
 		<br><br>
 		<button class="button buttonVote" type="submit" name="vote" size=20>Vote!</button>

@@ -106,7 +106,7 @@ if (!function_exists('init_newsletter'))  {
 				`person_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				`person_name` VARCHAR(64) NOT NULL,
 				`email` VARCHAR(64) NOT NULL,
-				`club_member` BOOLEAN NULL DEFAULT FALSE
+				`club_member` ENUM('false', 'true') NOT NULL DEFAULT 'false'
 			) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_german2_ci;";
 			
 			if (!mysqli_query($connection, $newsletter_table))  {
