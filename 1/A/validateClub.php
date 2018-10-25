@@ -1,6 +1,6 @@
 <?php
-require_once("dbCredentials.php");  // created variables to login
-require_once("dbConnect.php");
+require_once("../functions/dbCredentials.php");  // created variables to login
+require_once("../functions/dbConnect.php");
 
 if (!isset($_POST['club']))  {
 	header('Location: ./');
@@ -35,6 +35,7 @@ mysqli_stmt_execute($stmt);
 mysqli_stmt_bind_result($stmt, $club_id, $club_name, $club_votes, $fans);
 mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
+
 // Commit
 mysqli_commit($con);
 

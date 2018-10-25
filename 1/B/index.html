@@ -7,6 +7,9 @@
 			text-align: right;
 			padding-right: 5px;
 		}
+		span#required  {
+			color: #ff0000;
+		}
 	</style>
 </head>
 <body>
@@ -14,24 +17,15 @@
 	<form method="POST">
 		<table>
 			<tr>
-				<th>Geschlecht:</th>
-				<td>
-					<input type="radio" id="m" name="gender" value="m">
-					<label for="m">Männlich</label> 
-					<input type="radio" id="f" name="gender" value="f">
-					<label for="f">Weiblich</label>
-				</td>
+				<th>Name:<span id="required">*</span></th>
+				<td><input name="name" maxlength=64 placeholder="Martin Fischer" /></td>
 			</tr>
 			<tr>
-				<th>Name:</th>
-				<td><input name="name" /></td>
+				<th>E-Mail-Adresse:<span id="required">*</span></th>
+				<td><input name="mail" maxlength=64 placeholder="martin.fischer@hm.edu" /></td>
 			</tr>
 			<tr>
-				<th>E-Mail-Adresse:</th>
-				<td><input name="mail" /></td>
-			</tr>
-			<tr>
-				<th>Mitglied in einem Verein?</th>
+				<th>Mitglied in einem Verein?<span id="required">*</span></th>
 				<td>
 					<input type="radio" id="yes" name="member" value="yes">
 					<label for="yes">Ja</label> 

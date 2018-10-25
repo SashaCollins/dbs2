@@ -1,6 +1,6 @@
 ﻿<?php
-require_once("dbCredentials.php");  // created variables to login
-require_once("dbConnect.php");
+require_once("../functions/dbCredentials.php");  // created variables to login
+require_once("../functions/dbConnect.php");
 
 $con = open_connection($servername, $username, $password, $database);
 
