@@ -6,7 +6,7 @@ $con = open_connection($servername, $username, $password, $database);
 
 $result = mysqli_query($con, "SELECT club_id, club_name FROM football_clubs");
 if (!$result)  {
-	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($con)) . "'";
+	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($con) . "'");
 }
 
 $output = "";
@@ -71,19 +71,20 @@ mysqli_close($con);
 <body>
 	<h1>Wähle deinen Lieblingsverein!</h1>
 	<form action="validateClub.php" method="POST">
+		<input type="hidden" name="check" value="Other" />
 		<select name="club" id="clubs" size=7 onchange="checkCustom()">
 <?php
 			echo $output;
 ?>
 			<option value='other'>Other</option>
 		</select>
-	
+		
 		<div id="custom" style="display: none;">
 			<h3>Sag uns deinen Verein:</h3>
 			<input type="text" name="newClub" maxlength=64 placeholder="Dein Verein">
 		</div>
 		<br><br>
-		<button class="button buttonVote" type="submit" name="vote" size=20>Vote!</button>
+		<input class="button buttonVote" type="submit" value ="Vote!" name="vote" size=20 onclick="verifyInput()" />
 	</form>
 	Die aktuellen Ergebnisse kannst du dir <a href="results.php" target="_blank">hier</a> ansehen.
 			
@@ -94,6 +95,21 @@ mysqli_close($con);
 				document.getElementById("custom").style.display="block";
 			}  else  {
 				document.getElementById("custom").style.display="none";
+			}
+		}
+		
+		function verifyInput()  {
+			var check = document.getElementsByName("check")[0];
+			if (check != null)  {
+				var club = document.getElementsByName("club")[0];
+				if (club != null)  {
+					var optionIndex = club.selectedIndex;
+					if (optionIndex != -1) {
+						var clubName = club.options[optionIndex].text;
+						check.value = clubName;
+						console.log(check);
+					}
+				}
 			}
 		}
 	</script>

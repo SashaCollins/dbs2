@@ -15,7 +15,7 @@ $sql = "SELECT *, CONCAT(
 	(SELECT SUM(`club_votes`) FROM football_clubs) as fans FROM football_clubs";
 $result = mysqli_query($con, $sql);
 if (!$result)  {
-	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($con)) . "'";
+	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($con) . "'");
 }
 
 $output = "";

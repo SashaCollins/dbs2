@@ -6,7 +6,7 @@ $con = open_connection($servername, $username, $password, $database);
 
 $result = mysqli_query($con, "SELECT mailinglist_id, mailinglist_name FROM mailinglists");
 if (!$result)  {
-	die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con)) . "'";
+	die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
 }
 
 $output = "";
@@ -24,7 +24,7 @@ $member = $_POST['member'];
 
 $input = mysqli_prepare($con, "SELECT 1 FROM newsletter WHERE email = ?;");
 if (!$input) {
-	die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con)) . "'";
+	die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
 }
 mysqli_stmt_bind_param($input, 's', $mail);
 mysqli_stmt_execute($input);
@@ -36,7 +36,7 @@ mysqli_stmt_close($input);
 if($results == 0)  {
 	$input = mysqli_prepare($con, "INSERT INTO `newsletter` (`person_name`, `email`, `club_member`) VALUES (?, ?, ?)");
 	if (!$input) {
-		die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con)) . "'";
+		die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
 	}
 	mysqli_stmt_bind_param($input, 'sss', $name, $mail, $member);
 	mysqli_stmt_execute($input);

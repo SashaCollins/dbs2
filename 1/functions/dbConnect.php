@@ -76,7 +76,7 @@ if (!function_exists('init_football'))  {
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;";
 			
 			if (!mysqli_query($connection, $football_table))  {
-				die("An Error occurred while creating the Football Table. Error: '" . mysqli_error($connection)) . "'";
+				die("An Error occurred while creating the Football Table. Error: '" . mysqli_error($connection) . "'");
 			}
 			
 			// If Strings are not displayed correctly, open my.ini for mysql and uncomment all UTF8 config lines 
@@ -85,7 +85,7 @@ if (!function_exists('init_football'))  {
 				('Dynamo Dresden'), ('RB Leipzig'), ('TSV 1860 München');";
 			
 			if (!mysqli_query($connection, $football_insert))  {
-				die("An Error occurred while inserting Data into the Football Table. Error: '" . mysqli_error($connection)) . "'";
+				die("An Error occurred while inserting Data into the Football Table. Error: '" . mysqli_error($connection) . "'");
 			}
 			
 			// Commit
@@ -110,7 +110,7 @@ if (!function_exists('init_newsletter'))  {
 			) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_german2_ci;";
 			
 			if (!mysqli_query($connection, $newsletter_table))  {
-				die("An Error occurred while creating the Newsletter Table. Error: '" . mysqli_error($connection)) . "'";
+				die("An Error occurred while creating the Newsletter Table. Error: '" . mysqli_error($connection) . "'");
 			}
 		}
 		return true;
@@ -134,7 +134,7 @@ if (!function_exists('init_mailinglist'))  {
 			) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_german2_ci;";
 			
 			if (!mysqli_query($connection, $mailinglist_table))  {
-				die("An Error occurred while creating the Mailinglist Table. Error: '" . mysqli_error($connection)) . "'";
+				die("An Error occurred while creating the Mailinglist Table. Error: '" . mysqli_error($connection) . "'");
 			}
 			
 			// If Strings are not displayed correctly, open my.ini for mysql and uncomment all UTF8 config lines 
@@ -143,7 +143,7 @@ if (!function_exists('init_mailinglist'))  {
 				('EM 2020'), ('Deutsche Nationalmannschaft');";
 			
 			if (!mysqli_query($connection, $maillinglist_insert))  {
-				die("An Error occurred while inserting Data into the Mailinglist Table. Error: '" . mysqli_error($connection)) . "'";
+				die("An Error occurred while inserting Data into the Mailinglist Table. Error: '" . mysqli_error($connection) . "'");
 			}
 			
 			// Commit
@@ -167,7 +167,7 @@ if (!function_exists('init_newsletter_mailing_mapping'))  {
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_german2_ci;";
 			
 			if (!mysqli_query($connection, $newsletter_table))  {
-				die("An Error occurred while creating the Newsletter-Mailinglist-Mapping Table. Error: '" . mysqli_error($connection)) . "'";
+				die("An Error occurred while creating the Newsletter-Mailinglist-Mapping Table. Error: '" . mysqli_error($connection) . "'");
 			}
 		}
 		return true;
