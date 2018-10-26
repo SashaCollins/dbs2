@@ -20,10 +20,19 @@ $other = ($club_id == "other"? true : false);
 mysqli_autocommit($con, false);
 //mysqli_begin_transaction($con);
 
+// Deactivated JavaScript would lead that $check won't be changed on submit
 // Check if valid
-$sql = "SELECT 1 FROM $table WHERE club_id = ? AND club_name = ?";
-$stmt = mysqli_prepare($con, $sql);
-mysqli_stmt_bind_param($stmt, 'is', $club_id, $check);
+if (preg_match("/^[0-9]+$/", $club_id) && empty($check)) {
+	$sql = "SELECT 1 FROM $table WHERE club_id = ?";
+	$stmt = mysqli_prepare($con, $sql);
+	mysqli_stmt_bind_param($stmt, 'i', $club_id);
+
+}  else  {
+	$sql = "SELECT 1 FROM $table WHERE club_id = ? AND club_name = ?";
+	$stmt = mysqli_prepare($con, $sql);
+	mysqli_stmt_bind_param($stmt, 'is', $club_id, $check);
+}
+
 mysqli_stmt_execute($stmt);
 mysqli_stmt_store_result($stmt);
 $results = mysqli_stmt_num_rows($stmt);
@@ -78,13 +87,13 @@ if ($other)  {
 	
 }  else  {
 	
-	$sql = "UPDATE $table SET club_votes = club_votes + 1 WHERE club_id = ? AND club_name = ?;";
+	$sql = "UPDATE $table SET club_votes = club_votes + 1 WHERE club_id = ?;";
 	$stmt = mysqli_prepare($con, $sql);
 	if (!$stmt) {
 		die("An Error occurred while updating the Football Table. Error: '" . mysqli_error($con) . "'");
 	}
 
-	mysqli_stmt_bind_param($stmt, 'is', $club_id, $check);
+	mysqli_stmt_bind_param($stmt, 'i', $club_id);
 	mysqli_stmt_execute($stmt);
 	mysqli_stmt_close($stmt);
 

@@ -71,7 +71,7 @@ mysqli_close($con);
 <body>
 	<h1>Wähle deinen Lieblingsverein!</h1>
 	<form action="validateClub.php" method="POST">
-		<input type="hidden" name="check" value="Other" />
+		<input type="hidden" name="check" value="" />
 		<select name="club" id="clubs" size=7 onchange="checkCustom()">
 <?php
 			echo $output;
