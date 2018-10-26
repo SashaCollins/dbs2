@@ -2,7 +2,9 @@
 require_once("../functions/dbCredentials.php");  // created variables to login
 require_once("../functions/dbConnect.php");
 
-// TODO Set Cookie on Success and check it to avoid multiple votes
+if(isset($_COOKIE['club_vote'])) {
+	die("Du hast bereits an der Umfrage teilgenommen!");
+}
 
 if (!isset($_POST['club']))  {
 	header('Location: ./');
@@ -114,6 +116,8 @@ mysqli_commit($con);
 
 // Unlock Database
 mysqli_close($con);
+
+setcookie("club_vote", "Done", time()+60*60*24*(3*365 + 366));
 
 $out = "<center>Du hast erfolgreich für <b>$club_name</b> gestimmt!<br>
 <b>$club_name</b> hat bereits <b>$club_votes Fans</b>. :D <br>
