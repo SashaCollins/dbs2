@@ -18,6 +18,12 @@ while ($row = mysqli_fetch_assoc($result))  {
 
 mysqli_free_result($result);
 mysqli_close($con);
+
+// Error Handling
+$error = "";
+if (isset($_GET['error']))  {
+	$error = $_GET['error'];
+}
 ?>
 
 <html>
@@ -66,10 +72,16 @@ mysqli_close($con);
 			background-color: #4CAF50;
 			color: white;
 		}
+		
+		div#error  {
+			background-color: #d25656;
+			margin-bottom: 10px;
+		}
 	</style>
 </head>
 <body>
-	<h1>Wähle deinen Lieblingsverein!</h1>
+	<a href="./" style="text-decoration: none;"><h1>Wähle deinen Lieblingsverein!</h1></a>
+	<div id="error"><?php echo $error; ?></div>
 	<form action="validateClub.php" method="POST">
 		<input type="hidden" name="check" value="" />
 		<select name="club" id="clubs" size=7 onchange="checkCustom()">
@@ -88,10 +100,10 @@ mysqli_close($con);
 	</form>
 	Die aktuellen Ergebnisse kannst du dir <a href="results.php" target="_blank">hier</a> ansehen.
 			
-	<script>
+	<script type="text/javascript">
 		function checkCustom() {
 			var x = document.getElementById("clubs").value;
-			if(x=="other")  {
+			if (x == "other")  {
 				document.getElementById("custom").style.display="block";
 			}  else  {
 				document.getElementById("custom").style.display="none";
