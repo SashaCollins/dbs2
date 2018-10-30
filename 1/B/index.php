@@ -13,11 +13,12 @@ $output = "";
 while ($row = mysqli_fetch_assoc($result))  {
 	$id = $row['mailinglist_id'];
 	$name = $row['mailinglist_name'];
-	$output .= "\t\t\t\t\t<input type='checkbox' name='mailing[]' id='$id' value='$id'><label for='$id'>$name</label><br />";
+	$output .= "\t\t\t\t\t<input type='checkbox' name='mailing[]' value='$id' ".(isset($_POST['mailing']) && in_array($id, $_POST['mailing']) ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
 }
 
 mysqli_free_result($result);
 
+$success = false;
 if (isset($_POST['submit'])) {
 	$errors = [];
 	
@@ -30,6 +31,9 @@ if (isset($_POST['submit'])) {
 	if (empty($mail)) {
 		$errors[] = "Bitte gib deine Email-Adresse ein";
 	}
+	elseif (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+		$errors[] = "Deine Email-Adresse ist invalide";
+	}
 	
 	if (isset($_POST['member'])){
 		$member = $_POST['member'];
@@ -39,9 +43,9 @@ if (isset($_POST['submit'])) {
 	}
 	
 	if(empty($errors)){
-		$input = mysqli_prepare($con, "SELECT 1 FROM newsletter WHERE email = ?;");
+		$input = mysqli_prepare($con, "SELECT 1 FROM newsletter_members WHERE person_mail = ?;");
 		if (!$input) {
-			die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+			die("An error occurred while inserting into the newsletter_members table. Error: '" . mysqli_error($con) . "'");
 		}
 		mysqli_stmt_bind_param($input, 's', $mail);
 		mysqli_stmt_execute($input);
@@ -51,9 +55,9 @@ if (isset($_POST['submit'])) {
 
 		// Not in Table yet
 		if($results == 0)  {
-			$input = mysqli_prepare($con, "INSERT INTO `newsletter` (`person_name`, `email`, `club_member`) VALUES (?, ?, ?)");
+			$input = mysqli_prepare($con, "INSERT INTO `newsletter_members` (`person_name`, `person_mail`, `club_member`) VALUES (?, ?, ?)");
 			if (!$input) {
-				die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+				die("An error occurred while inserting into the newsletter_members table. Error: '" . mysqli_error($con) . "'");
 			}
 			mysqli_stmt_bind_param($input, 'sss', $name, $mail, $member);
 			mysqli_stmt_execute($input);
@@ -62,7 +66,7 @@ if (isset($_POST['submit'])) {
 			mysqli_stmt_close($input);
 			
 			if($personId == 0){
-				die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+				die("An error occurred while inserting into the newsletter_members table. Error: '" . mysqli_error($con) . "'");
 			}
 			if (isset($_POST['mailing'])) {
 				$listIDs = $_POST['mailing'];
@@ -76,8 +80,8 @@ if (isset($_POST['submit'])) {
 					mysqli_stmt_close($input);
 				}
 			}
-			
-			die("Du hast dich erfolgreich registriert!");
+			$success = true;
+			//die("Du hast dich erfolgreich registriert!");
 		}  
 		else  {
 			$errors[] = "Diese Email-Adresse ist bereits registriert";
@@ -91,7 +95,7 @@ mysqli_close($con);
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Vereinsmailer | DFB</title>
+	<title>Newsletter | DFB</title>
 	<style>
 		th  {
 			text-align: right;
@@ -113,6 +117,10 @@ mysqli_close($con);
 			echo "</ul></div>";
 		}
 ?>
+
+<?php
+if (!$success)  {
+?>
 	<form method="POST">
 		<table>
 			<tr>
@@ -126,9 +134,9 @@ mysqli_close($con);
 			<tr>
 				<th>Mitglied in einem Verein?<span id="required">*</span></th>
 				<td>
-					<input type="radio" id="yes" name="member" value="true">
+					<input type="radio" id="yes" name="member" value="true" <?php echo(isset($_POST['member']) && $_POST['member'] == 'true' ? 'checked' : ''); ?>>
 					<label for="yes">Ja</label> 
-					<input type="radio" id="no" name="member" value="false">
+					<input type="radio" id="no" name="member" value="false" <?php echo(isset($_POST['member']) && $_POST['member'] == 'false' ? 'checked' : ''); ?>>
 					<label for="no"> Nein</label><br />
 				</td>
 			</tr>
@@ -146,5 +154,10 @@ mysqli_close($con);
 			</tr>
 		</table>
 	</form>
+<?php }
+else{
+	echo "<h4>Du hast dich erfolgreich registriert!</h4>";
+}
+?>
 </body>
 </html>
