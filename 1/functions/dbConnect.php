@@ -52,7 +52,7 @@ if (!function_exists('init_tables'))  {
 		init_football($connection);
 		
 		// 1B
-		init_newsletter($connection);
+		init_newsletter_members($connection);
 		init_mailinglist($connection);
 		init_newsletter_mailing_mapping($connection);
 	}
@@ -95,9 +95,9 @@ if (!function_exists('init_football'))  {
 	}
 }
 
-if (!function_exists('init_newsletter'))  {
-	function init_newsletter($connection)  {
-		$table_name = "newsletter";
+if (!function_exists('init_newsletter_members'))  {
+	function init_newsletter_members($connection)  {
+		$table_name = "newsletter_members";
 		$table_exits = check_table($connection, $table_name);
 		
 		// We know about IF NOT EXISTS but we don't want to add the initial data too often
@@ -105,7 +105,7 @@ if (!function_exists('init_newsletter'))  {
 			$newsletter_table = "CREATE TABLE `". $table_name ."` (
 				`person_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				`person_name` VARCHAR(64) NOT NULL,
-				`email` VARCHAR(64) NOT NULL,
+				`person_mail` VARCHAR(64) NOT NULL,
 				`club_member` ENUM('false', 'true') NOT NULL DEFAULT 'false'
 			) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_german2_ci;";
 			
