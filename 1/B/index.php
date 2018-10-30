@@ -13,37 +13,79 @@ $output = "";
 while ($row = mysqli_fetch_assoc($result))  {
 	$id = $row['mailinglist_id'];
 	$name = $row['mailinglist_name'];
-	$output .= "\t\t\t\t\t<input type='checkbox' name='mailing' id='$id' value='$id'><label for='$id'>$name</label><br />";
+	$output .= "\t\t\t\t\t<input type='checkbox' name='mailing[]' id='$id' value='$id'><label for='$id'>$name</label><br />";
 }
 
 mysqli_free_result($result);
 
-$name = $_POST['name'];
-$mail = $_POST['mail'];
-$member = $_POST['member'];
-
-$input = mysqli_prepare($con, "SELECT 1 FROM newsletter WHERE email = ?;");
-if (!$input) {
-	die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
-}
-mysqli_stmt_bind_param($input, 's', $mail);
-mysqli_stmt_execute($input);
-mysqli_stmt_store_result($input);
-$results = mysqli_stmt_num_rows($input);
-mysqli_stmt_close($input);
-
-// Not in Table yet
-if($results == 0)  {
-	$input = mysqli_prepare($con, "INSERT INTO `newsletter` (`person_name`, `email`, `club_member`) VALUES (?, ?, ?)");
-	if (!$input) {
-		die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+if (isset($_POST['submit'])) {
+	$errors = [];
+	
+	$name = $_POST['name'];
+	if (empty($name)) {
+		$errors[] = "Bitte gib deinen Namen ein";
 	}
-	mysqli_stmt_bind_param($input, 'sss', $name, $mail, $member);
-	mysqli_stmt_execute($input);
-	mysqli_stmt_close($input);
-}
+	
+	$mail = $_POST['mail'];
+	if (empty($mail)) {
+		$errors[] = "Bitte gib deine Email-Adresse ein";
+	}
+	
+	if (isset($_POST['member'])){
+		$member = $_POST['member'];
+	} 
+	else {
+		$errors[] = "Bitte gib an ob du in einem Verein bist";
+	}
+	
+	if(empty($errors)){
+		$input = mysqli_prepare($con, "SELECT 1 FROM newsletter WHERE email = ?;");
+		if (!$input) {
+			die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+		}
+		mysqli_stmt_bind_param($input, 's', $mail);
+		mysqli_stmt_execute($input);
+		mysqli_stmt_store_result($input);
+		$results = mysqli_stmt_num_rows($input);
+		mysqli_stmt_close($input);
 
+		// Not in Table yet
+		if($results == 0)  {
+			$input = mysqli_prepare($con, "INSERT INTO `newsletter` (`person_name`, `email`, `club_member`) VALUES (?, ?, ?)");
+			if (!$input) {
+				die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+			}
+			mysqli_stmt_bind_param($input, 'sss', $name, $mail, $member);
+			mysqli_stmt_execute($input);
+			mysqli_stmt_store_result($input);
+			$personId = mysqli_stmt_insert_id($input);
+			mysqli_stmt_close($input);
+			
+			if($personId == 0){
+				die("An error occurred while inserting into the newsletter table. Error: '" . mysqli_error($con) . "'");
+			}
+			if (isset($_POST['mailing'])) {
+				$listIDs = $_POST['mailing'];
+				foreach($listIDs as $listId){
+					$input = mysqli_prepare($con, "INSERT INTO `newsletter_mailing_mapping` (`person_id`, `mailinglist_id`) VALUES (?, ?)");
+					if (!$input) {
+						die("An error occurred while inserting into the mapping table. Error: '" . mysqli_error($con) . "'");
+					}
+					mysqli_stmt_bind_param($input, 'ii', $personId, $listId);
+					mysqli_stmt_execute($input);
+					mysqli_stmt_close($input);
+				}
+			}
+			
+			die("Du hast dich erfolgreich registriert!");
+		}  
+		else  {
+			$errors[] = "Diese Email-Adresse ist bereits registriert";
+		}
+	}
+}
 mysqli_close($con);
+
 ?>
 
 <html>
@@ -55,22 +97,31 @@ mysqli_close($con);
 			text-align: right;
 			padding-right: 5px;
 		}
-		span#required  {
+		span#required, div#error  {
 			color: #ff0000;
 		}
 	</style>
 </head>
 <body>
 	<h1>Mitglied des Newsletters werden!</h1>
+<?php
+		if(isset($errors)){
+			echo "<div id='error'><ul>";
+			foreach($errors as $err){
+				echo "<li>".$err ."</li>";
+			}
+			echo "</ul></div>";
+		}
+?>
 	<form method="POST">
 		<table>
 			<tr>
 				<th>Name:<span id="required">*</span></th>
-				<td><input name="name" maxlength=64 placeholder="Martin Fischer" /></td>
+				<td><input name="name" maxlength=64 placeholder="Martin Fischer" value="<?php echo(isset($_POST['name']) ? $_POST['name'] : ""); ?>"/></td>
 			</tr>
 			<tr>
 				<th>E-Mail-Adresse:<span id="required">*</span></th>
-				<td><input name="mail" maxlength=64 placeholder="martin.fischer@hm.edu" /></td>
+				<td><input name="mail" maxlength=64 placeholder="martin.fischer@hm.edu" value="<?php echo(isset($_POST['mail']) ? $_POST['mail'] : ""); ?>"/></td>
 			</tr>
 			<tr>
 				<th>Mitglied in einem Verein?<span id="required">*</span></th>
@@ -91,7 +142,7 @@ mysqli_close($con);
 			</tr>
 			<tr>
 				<td></td>
-				<td><br /><input type="submit" value="Abonnieren!" /></td>
+				<td><br /><input name="submit" type="submit" value="Abonnieren!" /></td>
 			</tr>
 		</table>
 	</form>
