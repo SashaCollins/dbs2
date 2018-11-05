@@ -4,6 +4,42 @@ require_once("../functions/dbConnect.php");
 
 $con = open_connection($servername, $username, $password, $database);
 
+$success = false;
+if (isset($_POST['submit'])) {
+	$subject = $_POST['subject'];
+	$body = $_POST['body'];
+	$member = (isset($_POST['member']) ? $_POST['member'] : ''); // can be 'all', 'members' or 'nonMembers' (or nothing if not set)
+	$recipients = (isset($_POST['recipients']) ? $_POST['recipients'] : '');
+	$mailing = (isset($_POST['mailing']) ? $_POST['mailing'] : '');  // mailinglist-id
+	$both = (isset($_POST['both']) ? true : false);  // option
+	
+	$errors = [];
+	
+	if (empty($subject)) {
+		$errors[] = "Bitte einen Betreff ein";
+	}
+	
+	if (empty($body)) {
+		$errors[] = "Bitte gib deinen Mail-Text an";
+	}
+	
+	if (empty($member) && empty($mailing) && in_array('select', $recipients)){
+		$errors[] = "Bitte gib an, an wen du deine Mail senden willst";
+	}
+	
+	if((!empty($member) || !empty($mailing)) && !in_array('select', $recipients)) {
+		$errors[] = "Du hast eine doppelte Auswahl getroffen<br>
+					Deine Vordefinition wurde zurückgesetzt.<br>
+					Bitte wähle eine Vordefinition ODER wähle die Empfänger selbst";
+		unset($_POST['member']);
+		unset($_POST['mailing']);
+	}
+	
+	if (empty($errors)) {
+		
+	}
+}
+
 $result = mysqli_query($con, "SELECT mailinglist_id, mailinglist_name FROM mailinglists");
 if (!$result)  {
 	die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
@@ -13,7 +49,7 @@ $list = "";
 while ($row = mysqli_fetch_assoc($result))  {
 	$id = $row['mailinglist_id'];
 	$name = $row['mailinglist_name'];
-	$list .= "\t\t\t\t<input type='checkbox' name='mailing[]' id='$id' value='$id' ".(isset($_POST['mailing']) && in_array($id, $_POST['mailing']) ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
+	$list .= "\t\t\t\t<input type='radio' name='mailing' id='$id' value='$id' ".(isset($_POST['mailing']) && $_POST['mailing'] == $id ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
 }
 
 $result = mysqli_query($con, "SELECT person_id, person_name, person_mail FROM newsletter_members");
@@ -62,15 +98,25 @@ mysqli_close($con);
 <body>
 	<div style="margin-left: 25%; margin-right: 25%;">
 		<h1>Spammail verschicken hier!!</h1>
-		<form method="POST">	
+<?php
+		if (isset($errors)){
+			echo "<div id='error'><ul>";
+			foreach($errors as $err){
+				echo "<li>".$err ."</li>";
+			}
+			echo "</ul></div>";
+		}
+?>
+		<form method="POST">		
 			<h3><label for="subject">Betreff:<span id="required">*</span></label></h3>
-			<input id="subject" name="subject" style="width: 100%"></input>
+			<input id="subject" name="subject" style="width: 100%" value="<?php echo (isset($_POST['subject'])? $_POST['subject'] : ""); ?>" placeholder="Neue Spammail"></input>
 					
 			<h3><label for="body">Text:<span id="required">*</span></label></h3>				
-			<textarea id="body" name="body" style="width: 100%; resize: vertical;" rows="10"></textarea>
+			<textarea id="body" name="body" style="width: 100%; resize: vertical;" rows="10" placeholder="Deine Infos über (ir)relevante Fußballinformationen"><?php echo (isset($_POST['body'])? $_POST['subject'] : ""); ?></textarea>
 			
 			<div style="float: left">
-				<h3>Wähle eine:<span id="required">*</span><br />Vordefinition:</h3>				
+				<h3>Wähle eine Vordefinition:<span id="required">*</span><br /></h3>
+				<h4>Vereinsmitglied?:</h4>				
 				<input type="radio" id="all" name="member" value="all" <?php echo(isset($_POST['member']) && $_POST['member'] == 'all' ? 'checked' : ''); ?>>
 				<label for="all">An Alle</label><br />
 				<input type="radio" id="members" name="member" value="members" <?php echo(isset($_POST['member']) && $_POST['member'] == 'members' ? 'checked' : ''); ?>>
@@ -78,20 +124,18 @@ mysqli_close($con);
 				<input type="radio" id="nonMember" name="member" value="nonMembers" <?php echo(isset($_POST['member']) && $_POST['member'] == 'nonMembers' ? 'checked' : ''); ?>>
 				<label for="nonMember">An Nicht-Vereinsmitglieder</label><br /><br />
 				
-				<h3>Mailinglist:</h3>
+				<h4>Mailinglist?:</h4>
 <?php
 					echo $list;
 ?>				<br />
 				
-				<h3>Geschnitten oder Vereinigt?</h3>
-				<input type="radio" id="intersection" name="both" value="intersection" <?php echo(isset($_POST['both']) && $_POST['both'] == 'intersection' ? 'checked' : ''); ?>>
-				<label for="intersection">Mail an Vordefinition &cap; Mailinglist</label><br />
-				<input type="radio" id="union" name="both" value="union" <?php echo(isset($_POST['both']) && $_POST['both'] == 'union' ? 'checked' : ''); ?>>
-				<label for="union">Mail an Vordefinition &cup; Mailinglist</label><br />
+				<h3>Option:</h3>
+				<input type="checkbox" id="option" name="both" value="option" <?php echo(isset($_POST['both']) ? 'checked' : ''); ?>>
+				<label for="option">Sollen die Empfänger beide Vordefinitionen erfüllen?</label><br />
 			</div>
 			<div style="text-align: right; float: right">
 				<h3>...oder wähle die Empfänger selbst:<span id="required">*</span></h3>
-				<select name="club" id="clubs" size="7" onchange="checkCustom()" multiple>
+				<select name="recipients[]" size="7" onchange="checkCustom()" multiple>
 					<option value="select" selected>Bitte Auswählen:</option>
 <?php
 					echo $people;
