@@ -21,6 +21,9 @@ if (!isset($_POST['club']))  {
 $con = open_connection($servername, $username, $password, $database);
 $table = "football_clubs";
 
+if (!isset($_POST['check']))  {
+	returnError("Not Valid Input!");
+}
 $check = $_POST['check'];
 $club_id = $_POST['club'];
 $other = ($club_id == "other"? true : false);
