@@ -13,7 +13,7 @@ $list = "";
 while ($row = mysqli_fetch_assoc($result))  {
 	$id = $row['mailinglist_id'];
 	$name = $row['mailinglist_name'];
-	$list .= "\t\t\t\t\t<input type='checkbox' name='mailing[]' id='$id' value='$id' ".(isset($_POST['mailing']) && in_array($id, $_POST['mailing']) ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
+	$list .= "\t\t\t\t<input type='checkbox' name='mailing[]' id='$id' value='$id' ".(isset($_POST['mailing']) && in_array($id, $_POST['mailing']) ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
 }
 
 $result = mysqli_query($con, "SELECT person_id, person_name, person_mail FROM newsletter_members");
@@ -88,9 +88,7 @@ mysqli_close($con);
 				<label for="intersection">Mail an Vordefinition &cap; Mailinglist</label><br />
 				<input type="radio" id="union" name="both" value="union" <?php echo(isset($_POST['both']) && $_POST['both'] == 'union' ? 'checked' : ''); ?>>
 				<label for="union">Mail an Vordefinition &cup; Mailinglist</label><br />
-
 			</div>
-			
 			<div style="text-align: right; float: right">
 				<h3>...oder wähle die Empfänger selbst:<span id="required">*</span></h3>
 				<select name="club" id="clubs" size="7" onchange="checkCustom()" multiple>
@@ -99,9 +97,9 @@ mysqli_close($con);
 					echo $people;
 ?>
 				</select>
-			</div><br />
+			</div>
 			<div style="clear: both; padding-top: 15px;">
-				<center><input name="submit" type="submit" value="Absenden!" /></center>
+				<center><input name="submit" type="submit" value="Mails verschicken" /></center>
 			</div>
 		</form>
 	</div>
