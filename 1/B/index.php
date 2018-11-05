@@ -13,7 +13,7 @@ $output = "";
 while ($row = mysqli_fetch_assoc($result))  {
 	$id = $row['mailinglist_id'];
 	$name = $row['mailinglist_name'];
-	$output .= "\t\t\t\t\t<input type='checkbox' name='mailing[]' value='$id' ".(isset($_POST['mailing']) && in_array($id, $_POST['mailing']) ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
+	$output .= "\t\t\t\t\t<input type='checkbox' name='mailing[]' id='$id' value='$id' ".(isset($_POST['mailing']) && in_array($id, $_POST['mailing']) ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
 }
 
 mysqli_free_result($result);
@@ -42,7 +42,7 @@ if (isset($_POST['submit'])) {
 		$errors[] = "Bitte gib an ob du in einem Verein bist";
 	}
 	
-	if(empty($errors)){
+	if (empty($errors)){
 		$input = mysqli_prepare($con, "SELECT 1 FROM newsletter_members WHERE person_mail = ?;");
 		if (!$input) {
 			die("An error occurred while inserting into the newsletter_members table. Error: '" . mysqli_error($con) . "'");
@@ -54,7 +54,7 @@ if (isset($_POST['submit'])) {
 		mysqli_stmt_close($input);
 
 		// Not in Table yet
-		if($results == 0)  {
+		if ($results == 0)  {
 			$input = mysqli_prepare($con, "INSERT INTO `newsletter_members` (`person_name`, `person_mail`, `club_member`) VALUES (?, ?, ?)");
 			if (!$input) {
 				die("An error occurred while inserting into the newsletter_members table. Error: '" . mysqli_error($con) . "'");
@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
 			$personId = mysqli_stmt_insert_id($input);
 			mysqli_stmt_close($input);
 			
-			if($personId == 0){
+			if ($personId == 0){
 				die("An error occurred while inserting into the newsletter_members table. Error: '" . mysqli_error($con) . "'");
 			}
 			if (isset($_POST['mailing'])) {
@@ -109,7 +109,7 @@ mysqli_close($con);
 <body>
 	<h1>Mitglied des Newsletters werden!</h1>
 <?php
-		if(isset($errors)){
+		if (isset($errors)){
 			echo "<div id='error'><ul>";
 			foreach($errors as $err){
 				echo "<li>".$err ."</li>";
@@ -119,17 +119,17 @@ mysqli_close($con);
 ?>
 
 <?php
-if (!$success)  {
+if (!$success)  {  // Cheap Trick
 ?>
 	<form method="POST">
 		<table>
 			<tr>
-				<th>Name:<span id="required">*</span></th>
-				<td><input name="name" maxlength=64 placeholder="Martin Fischer" value="<?php echo(isset($_POST['name']) ? $_POST['name'] : ""); ?>"/></td>
+				<th><label for="name">Name:<span id="required">*</span></label></th>
+				<td><input name="name" id="name" maxlength=64 placeholder="Martin Fischer" value="<?php echo(isset($_POST['name']) ? $_POST['name'] : ""); ?>"/></td>
 			</tr>
 			<tr>
-				<th>E-Mail-Adresse:<span id="required">*</span></th>
-				<td><input name="mail" maxlength=64 placeholder="martin.fischer@hm.edu" value="<?php echo(isset($_POST['mail']) ? $_POST['mail'] : ""); ?>"/></td>
+				<th><label for="mail">E-Mail-Adresse:<span id="required">*</span></label></th>
+				<td><input name="mail" id="mail" maxlength=64 placeholder="martin.fischer@hm.edu" value="<?php echo(isset($_POST['mail']) ? $_POST['mail'] : ""); ?>"/></td>
 			</tr>
 			<tr>
 				<th>Mitglied in einem Verein?<span id="required">*</span></th>
