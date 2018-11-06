@@ -23,26 +23,26 @@ if (isset($_POST['submit'])) {
 		$errors[] = "Bitte gib deinen Mail-Text an";
 	}
 	
-	if (empty($member) && empty($mailing) && in_array('select', $recipients)){
+	if (empty($member) && empty($mailing) && (in_array('select', $recipients) || empty($recipients))){
 		$errors[] = "Bitte gib an, an wen du deine Mail senden willst";
 	}
 	
-	if((!empty($member) || !empty($mailing)) && !in_array('select', $recipients)) {
-		$errors[] = "Du hast eine doppelte Auswahl getroffen<br>
+	if ((!empty($member) || !empty($mailing)) && !in_array('select', $recipients)) {
+		$errors[] = "Du hast eine doppelte Auswahl getroffen!<br>
 					Deine Vordefinition wurde zurückgesetzt.<br>
-					Bitte wähle eine Vordefinition ODER wähle die Empfänger selbst";
+					Bitte wähle eine Vordefinition ODER wähle die Empfänger selbst!";
 		unset($_POST['member']);
 		unset($_POST['mailing']);
 	}
 	
 	if (empty($errors)) {
 		$sql = "SELECT p.person_name, p.person_mail 
-		FROM `newsletter_members` as p, `mailinglists` as l, `newsletter_mailing_mapping` as m 
-		WHERE p.person_id = m.person_id 
-		AND l.mailinglist_id = m.mailinglist_id";
-		if(in_array('select', $recipients)){		
+		FROM `mailinglists` as l, `newsletter_members` as p
+		LEFT JOIN `newsletter_mailing_mapping` m ON p.person_id = m.person_id
+		WHERE (l.mailinglist_id = m.mailinglist_id OR m.mailinglist_id IS NULL) /* in case not in a mailing list */";
+		if (in_array('select', $recipients)) {		
 			if ($member != "all") {
-				if(!empty($member)){
+				if (!empty($member)){
 					$sql .= " AND";
 					if (!empty($mailing)){
 						$sql .= " (";
@@ -50,22 +50,28 @@ if (isset($_POST['submit'])) {
 					$sql .= " p.club_member = ".(($member == 'member') ? "'true'" : "'false'");
 				}
 				if (!empty($mailing)) {
-					$sql .= " ".($both || empty($member) ? "AND" : "OR")." l.mailinglist_id = $mailing";
+					$sql .= " ".($both || empty($member) ? "AND" : "OR")." (l.mailinglist_id = $mailing AND m.mailinglist_id IS NOT NULL /* in case not in a mailing list */)";
 					if($member != "all" && !empty($member)){
 						$sql .= " )";
 					}
 				}
 			}
-			$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
-			echo $sql;
 		}
-		else{
-			foreach($recipients as $id){
-				$sql .= " AND p.person_id = $id";
+		else {
+			for ($c = 0; $c < sizeof($recipients); $c++)  {
+				$id = $recipients[$c];
+				if ($c == 0)  {
+					$sql .= " AND (p.person_id = $id";
+				} else {
+					$sql .= " OR p.person_id = $id";
+				}
+				if ($c == sizeof($recipients) - 1)  {  // not elseif, size(array) could be 1
+					$sql .= ")";
+				}
 			}
-			$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
-			echo $sql;
 		}
+		$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
+		echo $sql;
 		
 		$result = mysqli_query($con, $sql);
 		if (!$result){
