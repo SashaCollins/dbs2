@@ -210,7 +210,7 @@ if (!$success)  {  // Cheap Trick
 			</div>
 			<div style="text-align: right; float: right">
 				<h3>...oder wähle die Empfänger selbst:<span id="required">*</span></h3>
-				<select name="recipients[]" size="7" onchange="checkCustom()" multiple>
+				<select name="recipients[]" size="7" multiple>
 					<option value="select" <?php echo (!isset($_POST['recipients']) || (isset($_POST['recipients']) && in_array('select', $_POST['recipients'])) ? 'selected' : ''); ?>>Bitte Auswählen:</option>
 <?php
 					echo $people;
