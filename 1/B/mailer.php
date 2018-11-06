@@ -44,7 +44,7 @@ if (isset($_POST['submit'])) {
 		$reason = "Dies ist eine Informations-Mail für Sie!";
 		if (in_array('select', $recipients)) {		
 			if ($member != "all") {
-				$reason = "";  // reset to check
+				$reason = "";  // reset to generate later
 				if (!empty($member)) {
 					$sql .= " AND";
 					if (!empty($mailing)) {
@@ -79,7 +79,7 @@ if (isset($_POST['submit'])) {
 		//echo $sql;
 		
 		$result = mysqli_query($con, $sql);
-		if (!$result){
+		if (!$result) {
 			die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
 		}
 		
@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
 	}
 }
 
-if(!$success){	
+if(!$success) {	
 	$result = mysqli_query($con, "SELECT mailinglist_id, mailinglist_name FROM mailinglists");
 	if (!$result)  {
 		die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
@@ -176,7 +176,7 @@ if (!$success)  {  // Cheap Trick
 <?php
 		if (isset($errors)){
 			echo "<div id='error'><ul>";
-			foreach($errors as $err){
+			foreach($errors as $err) {
 				echo "<li>".$err ."</li>";
 			}
 			echo "</ul></div>";
@@ -187,7 +187,7 @@ if (!$success)  {  // Cheap Trick
 			<input id="subject" name="subject" style="width: 100%" value="<?php echo (isset($_POST['subject'])? $_POST['subject'] : ""); ?>" placeholder="Neue Spammail"></input>
 					
 			<h3><label for="body">Text:<span id="required">*</span></label></h3>				
-			<textarea id="body" name="body" style="width: 100%; resize: vertical;" rows="10" placeholder="Deine Infos über (ir)relevante Fußballinformationen"><?php echo (isset($_POST['body'])? $_POST['subject'] : ""); ?></textarea>
+			<textarea id="body" name="body" style="width: 100%; resize: vertical;" rows="10" placeholder="Deine Infos über (ir)relevante Fußballinformationen"><?php echo (isset($_POST['body'])? $_POST['body'] : ""); ?></textarea>
 			
 			<div style="float: left">
 				<h3>Wähle eine Vordefinition:<span id="required">*</span><br /></h3>
