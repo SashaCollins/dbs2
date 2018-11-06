@@ -4,6 +4,7 @@ require_once("../functions/dbCredentials.php");  // created variables to login
 require_once("../functions/dbConnect.php");
 
 include("graph.php");
+$removeNull = true;
 
 $con = open_connection($servername, $username, $password, $database);
 
@@ -31,8 +32,10 @@ while ($row = mysqli_fetch_assoc($result))  {
 	$fans = $row['fans'];
 	$output .= "\t\t$name | $votes | $percent<br />\n";
 	
-	array_push($data, $votes);
-	array_push($legend, $name);
+	if ($votes != 0 || !$removeNull)  {
+		array_push($data, $votes);
+		array_push($legend, $name);
+	}
 }
 $output .= "\t\tTotal | $fans | 100%<br />\n";
 
