@@ -8,8 +8,8 @@ $success = false;
 if (isset($_POST['submit'])) {
 	$subject = $_POST['subject'];
 	$body = $_POST['body'];
-	$member = (isset($_POST['member']) ? $_POST['member'] : ''); // can be 'all', 'members' or 'nonMembers' (or nothing if not set)
-	$recipients = (isset($_POST['recipients']) ? $_POST['recipients'] : '');
+	$member = (isset($_POST['member']) ? $_POST['member'] : ''); // can be 'all', 'member' or 'nonMember' (or nothing if not set)
+	$recipients = (isset($_POST['recipients']) ? $_POST['recipients'] : array());
 	$mailing = (isset($_POST['mailing']) ? $_POST['mailing'] : '');  // mailinglist-id
 	$both = (isset($_POST['both']) ? true : false);  // option
 	
@@ -36,37 +36,79 @@ if (isset($_POST['submit'])) {
 	}
 	
 	if (empty($errors)) {
+		$sql = "SELECT p.person_name, p.person_mail 
+		FROM `newsletter_members` as p, `mailinglists` as l, `newsletter_mailing_mapping` as m 
+		WHERE p.person_id = m.person_id 
+		AND l.mailinglist_id = m.mailinglist_id";
+		if(in_array('select', $recipients)){		
+			if ($member != "all") {
+				if(!empty($member)){
+					$sql .= " AND";
+					if (!empty($mailing)){
+						$sql .= " (";
+					}
+					$sql .= " p.club_member = ".(($member == 'member') ? "'true'" : "'false'");
+				}
+				if (!empty($mailing)) {
+					$sql .= " ".($both || empty($member) ? "AND" : "OR")." l.mailinglist_id = $mailing";
+					if($member != "all" && !empty($member)){
+						$sql .= " )";
+					}
+				}
+			}
+			$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
+			echo $sql;
+		}
+		else{
+			foreach($recipients as $id){
+				$sql .= " AND p.person_id = $id";
+			}
+			$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
+			echo $sql;
+		}
 		
+		$result = mysqli_query($con, $sql);
+		if (!$result){
+			die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
+		}
+		while ($row = mysqli_fetch_assoc($result))  {
+			$name = $row['person_name'];
+			$mail = $row['person_mail'];
+			//TODO print mails
+		}
+		$success = true;
 	}
 }
 
-$result = mysqli_query($con, "SELECT mailinglist_id, mailinglist_name FROM mailinglists");
-if (!$result)  {
-	die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
-}
+if(!$success){	
+	$result = mysqli_query($con, "SELECT mailinglist_id, mailinglist_name FROM mailinglists");
+	if (!$result)  {
+		die("An Error occurred while getting the Mailinglists. Error: '" . mysqli_error($con) . "'");
+	}
 
-$list = "";
-while ($row = mysqli_fetch_assoc($result))  {
-	$id = $row['mailinglist_id'];
-	$name = $row['mailinglist_name'];
-	$list .= "\t\t\t\t<input type='radio' name='mailing' id='$id' value='$id' ".(isset($_POST['mailing']) && $_POST['mailing'] == $id ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
-}
+	$list = "";
+	while ($row = mysqli_fetch_assoc($result))  {
+		$id = $row['mailinglist_id'];
+		$name = $row['mailinglist_name'];
+		$list .= "\t\t\t\t<input type='radio' name='mailing' id='$id' value='$id' ".(isset($_POST['mailing']) && $_POST['mailing'] == $id ? 'checked' : '')."><label for='$id'>$name</label><br />\n";
+	}
 
-$result = mysqli_query($con, "SELECT person_id, person_name, person_mail FROM newsletter_members");
-if (!$result)  {
-	die("An Error occurred while getting the newsletter_members. Error: '" . mysqli_error($con) . "'");
-}
+	$result = mysqli_query($con, "SELECT person_id, person_name, person_mail FROM newsletter_members");
+	if (!$result)  {
+		die("An Error occurred while getting the newsletter_members. Error: '" . mysqli_error($con) . "'");
+	}
 
-$people = "";
-while ($row = mysqli_fetch_assoc($result))  {
-	$id = $row['person_id'];
-	$name = $row['person_name'];
-	$mail = $row['person_mail'];
-	$people .= "\t\t\t<option value='$id'>$name &lt;$mail&gt;</option>\n";
-}
+	$people = "";
+	while ($row = mysqli_fetch_assoc($result))  {
+		$id = $row['person_id'];
+		$name = $row['person_name'];
+		$mail = $row['person_mail'];
+		$people .= "\t\t\t<option value='$id' ".(isset($_POST['recipients']) && in_array($id, $_POST['recipients']) ? 'selected' : '').">$name &lt;$mail&gt;</option>\n";
+	}
 
-mysqli_free_result($result);
-mysqli_close($con);
+	mysqli_free_result($result);
+	mysqli_close($con);
+}
 ?>
 
 <html>
@@ -80,7 +122,13 @@ mysqli_close($con);
 		}
 		h3{
 			font-size: 25px;
-			margin-bottom: 0px;
+			margin-bottom: 10px;
+		}
+		h5{
+			margin-top: 0px;
+		}
+		select{
+			margin-top: 10px;
 		}
 		th  {
 			text-align: right;
@@ -96,6 +144,9 @@ mysqli_close($con);
 	</style>
 </head>
 <body>
+<?php
+if (!$success)  {  // Cheap Trick
+?>
 	<div style="margin-left: 25%; margin-right: 25%;">
 		<h1>Spammail verschicken hier!!</h1>
 <?php
@@ -119,9 +170,9 @@ mysqli_close($con);
 				<h4>Vereinsmitglied?:</h4>				
 				<input type="radio" id="all" name="member" value="all" <?php echo(isset($_POST['member']) && $_POST['member'] == 'all' ? 'checked' : ''); ?>>
 				<label for="all">An Alle</label><br />
-				<input type="radio" id="members" name="member" value="members" <?php echo(isset($_POST['member']) && $_POST['member'] == 'members' ? 'checked' : ''); ?>>
-				<label for="members">An Vereinsmitglieder</label><br />
-				<input type="radio" id="nonMember" name="member" value="nonMembers" <?php echo(isset($_POST['member']) && $_POST['member'] == 'nonMembers' ? 'checked' : ''); ?>>
+				<input type="radio" id="member" name="member" value="member" <?php echo(isset($_POST['member']) && $_POST['member'] == 'member' ? 'checked' : ''); ?>>
+				<label for="member">An Vereinsmitglieder</label><br />
+				<input type="radio" id="nonMember" name="member" value="nonMember" <?php echo(isset($_POST['member']) && $_POST['member'] == 'nonMember' ? 'checked' : ''); ?>>
 				<label for="nonMember">An Nicht-Vereinsmitglieder</label><br /><br />
 				
 				<h4>Mailinglist?:</h4>
@@ -136,16 +187,23 @@ mysqli_close($con);
 			<div style="text-align: right; float: right">
 				<h3>...oder wähle die Empfänger selbst:<span id="required">*</span></h3>
 				<select name="recipients[]" size="7" onchange="checkCustom()" multiple>
-					<option value="select" selected>Bitte Auswählen:</option>
+					<option value="select" <?php echo (!isset($_POST['recipients']) || (isset($_POST['recipients']) && in_array('select', $_POST['recipients'])) ? 'selected' : ''); ?>>Bitte Auswählen:</option>
 <?php
 					echo $people;
 ?>
 				</select>
+				<h5>Halte 'Strg' gedrückt zur Mehrfachauswahl</h5>
 			</div>
 			<div style="clear: both; padding-top: 15px;">
 				<center><input name="submit" type="submit" value="Mails verschicken" /></center>
 			</div>
 		</form>
 	</div>
+<?php
+}
+else{
+	echo "";
+}
+?>
 </body>
 </html>
