@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
 	}
 	
 	if (empty($errors)) {
-		$sql = "SELECT p.person_name, p.person_mail, l.mailinglist_name 
+		$sql = "SELECT p.person_name, p.person_mail 
 		FROM `mailinglists` as l, `newsletter_members` as p
 		LEFT JOIN `newsletter_mailing_mapping` m ON p.person_id = m.person_id
 		WHERE (l.mailinglist_id = m.mailinglist_id OR m.mailinglist_id IS NULL) /* in case not in a mailing list */";
@@ -87,16 +87,18 @@ if (isset($_POST['submit'])) {
 		if (mysqli_num_rows($result) == 0)  {
 			$errors[] = "Es wurden keine Mails versendet, da es keine zu den Eingaben passende Einträge gab!";
 		}  else {
+			$tmp_result = mysqli_query($con, "SELECT l.mailinglist_name FROM `mailinglists` l WHERE l.mailinglist_id = $mailing");
+			$list = mysqli_fetch_assoc($tmp_result)['mailinglist_name'];
+			
 			while ($row = mysqli_fetch_assoc($result))  {
 				$name = $row['person_name'];
 				$mail = $row['person_mail'];
-				$list = $row['mailinglist_name'];
-				
 				if (empty($reason))  {
 					$reason = "Sie erhalten diese E-Mail, da Sie ".(!empty($member) ? "<u>".($member == 'nonMember' ? "k" : "")."ein Mitglied eines Vereins</u>" : "").(!empty($member) && !empty($mailing) ? " <b>".($both || empty($member) ? "und" : "oder")."</b> " : "").(!empty($mailing) ? "<u>im Mail-Verteiler für '<b>$list</b>'</u> sind" : " sind").".";  // easy String concatenation
 				}
 				
 				$output .= "\t<hr /><code>MailTo:&nbsp; $mail<br />Subject: $subject</code><br /><br />Hallo $name!<br /><br />$reason<br /><br />".nl2br($body)."<br /><br />Ihr DFB!\n";
+				$reason = "";
 			}
 			$success = true;
 		}

@@ -134,7 +134,7 @@ mysqli_close($con);
 setcookie("club_vote", "Done", time()+60*60*24*(3*365 + 366));
 
 $out = "<center>Du hast erfolgreich für <b>$club_name</b> gestimmt!<br>
-<b>$club_name</b> hat bereits <b>$club_votes Fans</b>. :D <br>
+<b>$club_name</b> hat bereits <b>$club_votes Fan".($club_votes == 1 ? "" : "s")."</b>. :D<br>
 Insgesamt haben bereits $fans Personen abgestimmt.<br /><br />
 <a href='results.php'>Hier</a> kannst du sehen, wie bislang abgestimmt wurde.</center>";
 
