@@ -10,13 +10,13 @@ $con = open_connection($servername, $username, $password, $database);
 
 $sql = "SELECT *, CONCAT(
 	(CASE WHEN
-		(club_votes * 100 / (SELECT SUM(`club_votes`) FROM football_clubs)) IS NULL
+		(SELECT SUM(`club_votes`) FROM football_clubs) = 0
 	 THEN
 		0 
 	 ELSE
 		club_votes * 100 / (SELECT SUM(`club_votes`) FROM football_clubs) 
 	 END), '%') as percent,
-	(SELECT SUM(`club_votes`) FROM football_clubs) as fans FROM football_clubs";
+	(SELECT SUM(`club_votes`) FROM football_clubs) as fans FROM football_clubs;";
 $result = mysqli_query($con, $sql);
 if (!$result)  {
 	die("An Error occurred while getting the Football Teams. Error: '" . mysqli_error($con) . "'");
