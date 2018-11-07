@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
 			}
 		}
 		$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
-		echo $sql;
+		//echo $sql;
 		
 		$result = mysqli_query($con, $sql);
 		if (!$result) {
