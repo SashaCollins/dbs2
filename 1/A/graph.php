@@ -41,7 +41,7 @@ if (!function_exists('draw_graph'))  {
 		// Set A title for the plot
 		$graph->title->Set("Verteilung Fussballfans");
 		$graph->title->SetFont(FF_ARIAL, FS_NORMAL, 18);
-		$graph->subtitle->Set("State: ".date("d.m.Y; H:i:s"));
+		$graph->subtitle->Set("Stand: ".date("d.m.Y; H:i:s"));
 
 		// Create
 		$p1 = new PiePlot3D($data);

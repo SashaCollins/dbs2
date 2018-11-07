@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
 			}
 		}
 		$sql .= " GROUP BY p.person_id ORDER BY p.person_id;";
-		//echo $sql;
+		echo $sql;
 		
 		$result = mysqli_query($con, $sql);
 		if (!$result) {
@@ -100,7 +100,6 @@ if (isset($_POST['submit'])) {
 				}
 				
 				$output .= "\t<hr /><code>Mail-To: $mail<br />Subject: $subject</code><br /><br />Hallo $name!<br /><br />$reason<br /><br />".nl2br($body)."<br /><br />Ihr DFB!\n";
-				$reason = "";
 			}
 			$success = true;
 		}

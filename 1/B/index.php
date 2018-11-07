@@ -24,22 +24,22 @@ if (isset($_POST['submit'])) {
 	
 	$name = $_POST['name'];
 	if (empty($name)) {
-		$errors[] = "Bitte gib deinen Namen ein";
+		$errors[] = "Bitte gib deinen Namen ein!";
 	}
 	
 	$mail = $_POST['mail'];
 	if (empty($mail)) {
-		$errors[] = "Bitte gib deine Email-Adresse ein";
+		$errors[] = "Bitte gib deine E-Mail-Adresse ein!";
 	}
 	elseif (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-		$errors[] = "Deine Email-Adresse ist invalide";
+		$errors[] = "Deine E-Mail-Adresse ist invalide!";
 	}
 	
 	if (isset($_POST['member'])){
 		$member = $_POST['member'];
 	} 
 	else {
-		$errors[] = "Bitte gib an ob du in einem Verein bist";
+		$errors[] = "Bitte gib an ob du in einem Verein bist!";
 	}
 	
 	if (empty($errors)){
@@ -84,7 +84,7 @@ if (isset($_POST['submit'])) {
 			//die("Du hast dich erfolgreich registriert!");
 		}  
 		else  {
-			$errors[] = "Diese Email-Adresse ist bereits registriert";
+			$errors[] = "Diese E-Mail-Adresse ist bereits registriert";
 		}
 	}
 }
