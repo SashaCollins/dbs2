@@ -78,7 +78,7 @@ mysqli_close($con);
 			table td, table th  {
 				border-left: 2px solid;
 			}
-			table td:first-child, th:first-child  {
+			table td:first-child, table th:first-child  {
 				border-left: none;
 			}
 		</style>
@@ -96,6 +96,7 @@ mysqli_close($con);
 			echo "\t\t".'<br /><img src="'.$filename.'" />';
 		}
 ?>
+
 		</center>
 	</body>
 </html>
