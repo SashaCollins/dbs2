@@ -39,7 +39,7 @@ CREATE TYPE ComputerskillsT AS TABLE OF VARCHAR(15);
 /
 CREATE TYPE OfficeskillsT AS TABLE OF VARCHAR(31);
 /
-CREATE TYPE TechnicanskillsT AS TABLE OF VARCHAR(15);
+CREATE TYPE TechnicianskillsT AS TABLE OF VARCHAR(15);
 /
 CREATE TYPE StaffT UNDER PersonT (office_No VARCHAR(7), staff_type VARCHAR(15)) NOT FINAL;
 /
@@ -47,7 +47,7 @@ CREATE TYPE StudentT UNDER PersonT (student_year INTEGER);
 /
 CREATE TYPE AdminT UNDER StaffT (admin_title VARCHAR(31), admin_computerskills ComputerskillsT, admin_officeskills OfficeskillsT);
 /
-CREATE TYPE TechnicanT UNDER StaffT (tech_title VARCHAR(15), tech_skills TechnicanskillsT);
+CREATE TYPE TechnicianT UNDER StaffT (tech_title VARCHAR(15), tech_skills TechnicianskillsT);
 / 
 CREATE TYPE TutorT UNDER StaffT (tutor_hours INTEGER, tutor_rate DOUBLE PRECISION);
 /
