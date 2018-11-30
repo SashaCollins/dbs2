@@ -4,19 +4,19 @@ CREATE TYPE ProfessorT AS OBJECT (prof_id INTEGER, prof_name VARCHAR(31), prof_c
 /
 CREATE TYPE ProfessorListT AS TABLE OF REF ProfessorT;
 /
-CREATE TYPE RCUnitT AS TABLE OF VARCHAR(63);
+CREATE TYPE RCUnitT AS TABLE OF VARCHAR(127);
 /
 CREATE TYPE DepartmentT AS OBJECT (dept_id VARCHAR(3), dept_name VARCHAR(31), dept_head VARCHAR(31), dept_prof ProfessorListT);
 /
-CREATE TYPE DepartmentListT AS TABLE OF REF DepartmentT;
+CREATE TYPE DepartmentListT AS TABLE OF DepartmentT;
 /
 CREATE TYPE SchoolT AS OBJECT (school_id VARCHAR(3), school_name VARCHAR(31), school_head VARCHAR(31), school_prof ProfessorListT);
 /
-CREATE TYPE SchoolListT AS TABLE OF REF SchoolT;
+CREATE TYPE SchoolListT AS TABLE OF SchoolT;
 /
-CREATE TYPE ResearchCentreT AS OBJECT (rc_id VARCHAR(3), rc_name VARCHAR(63), rc_unit RCunitT);
+CREATE TYPE ResearchCentreT AS OBJECT (rc_id VARCHAR(3), rc_name VARCHAR(127), rc_unit RCunitT);
 /
-CREATE TYPE ResearchCentreListT AS TABLE OF REF ResearchCentreT;
+CREATE TYPE ResearchCentreListT AS TABLE OF ResearchCentreT;
 /
 -- TODO aggregation clustering technique
 CREATE TYPE FacultyT AS OBJECT (fac_id INTEGER, fac_name VARCHAR(31), fac_dean VARCHAR(15), dept DepartmentListT, school SchoolListT, rc ResearchCentreListT);
@@ -41,21 +41,21 @@ CREATE TYPE OfficeskillsT AS TABLE OF VARCHAR(31);
 /
 CREATE TYPE TechnicianskillsT AS TABLE OF VARCHAR(15);
 /
-CREATE TYPE StaffT UNDER PersonT (office_No VARCHAR(7), staff_type VARCHAR(15)) NOT FINAL;
+CREATE TYPE StaffT UNDER PersonT (person_id VARCHAR(8), office_No VARCHAR(7), staff_type VARCHAR(15)) NOT FINAL;
 /
-CREATE TYPE StudentT UNDER PersonT (student_year INTEGER);
+CREATE TYPE StudentT UNDER PersonT (person_id VARCHAR(8), student_year INTEGER);
 /
-CREATE TYPE AdminT UNDER StaffT (admin_title VARCHAR(31), admin_computerskills ComputerskillsT, admin_officeskills OfficeskillsT);
+CREATE TYPE AdminT UNDER StaffT (person_id VARCHAR(8), admin_title VARCHAR(31), admin_computerskills ComputerskillsT, admin_officeskills OfficeskillsT);
 /
-CREATE TYPE TechnicianT UNDER StaffT (tech_title VARCHAR(15), tech_skills TechnicianskillsT);
+CREATE TYPE TechnicianT UNDER StaffT (person_id VARCHAR(8), tech_title VARCHAR(15), tech_skills TechnicianskillsT);
 / 
-CREATE TYPE TutorT UNDER StaffT (tutor_hours INTEGER, tutor_rate DOUBLE PRECISION);
+CREATE TYPE TutorT UNDER StaffT (person_id VARCHAR(8), tutor_hours INTEGER, tutor_rate DOUBLE PRECISION);
 /
-CREATE TYPE LecturerT UNDER StaffT (lect_area VARCHAR(31), lect_type VARCHAR(15)) NOT FINAL;
+CREATE TYPE LecturerT UNDER StaffT (person_id VARCHAR(8), lect_area VARCHAR(31), lect_type VARCHAR(15)) NOT FINAL;
 /
-CREATE TYPE SeniorLecturerT UNDER LecturerT (senlect_phd INTEGER, senlect_master INTEGER, senlect_honours INTEGER);
+CREATE TYPE SeniorLecturerT UNDER LecturerT (person_id VARCHAR(8), senlect_phd INTEGER, senlect_master INTEGER, senlect_honours INTEGER);
 /
-CREATE TYPE AssociateLecturerT UNDER LecturerT (asslect_honours INTEGER, asslect_year INTEGER);
+CREATE TYPE AssociateLecturerT UNDER LecturerT (person_id VARCHAR(8), asslect_honours INTEGER, asslect_year INTEGER);
 /
 CREATE TYPE SubjectT AS OBJECT (subject_id VARCHAR(8), subject_name VARCHAR(31), subject_credit INTEGER, subject_prereq VARCHAR(8), person REF PersonT);
 /
