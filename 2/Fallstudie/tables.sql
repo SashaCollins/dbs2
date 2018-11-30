@@ -7,9 +7,9 @@ CREATE TABLE Campus OF CampusT;
 CREATE TABLE Professor OF ProfessorT;
 
 CREATE TABLE Faculty OF FacultyT 
-NESTED TABLE dept STORE AS department_nm
-NESTED TABLE school STORE AS school_nm 
-NESTED TABLE rc STORE AS rc_nm;
+NESTED TABLE dept STORE AS department_nm(NESTED TABLE dept_prof STORE AS dept_prof_nm)
+NESTED TABLE school STORE AS school_nm(NESTED TABLE school_prof STORE AS school_prof_nm)
+NESTED TABLE rc STORE AS rc_nm(NESTED TABLE rc_unit STORE AS rc_unit_nm);
 
 CREATE TABLE Building OF BuildingT;
 
@@ -44,6 +44,3 @@ CREATE TABLE SeniorLecturer OF SeniorLecturerT;
 CREATE TABLE AssociateLecturer OF AssociateLecturerT;
 
 CREATE TABLE Subject OF SubjectT;
-
-
-
