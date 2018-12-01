@@ -136,55 +136,87 @@ VALUES (PersonT('10002935', 'Jones', 'Felicity', 'Ms', '14 Rennie St Thornbury V
           (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora')));
 -- additional People needed for Staff
 INSERT INTO Person 
-VALUES (PersonT('01958652', 'John', 'Doe', 'Mr', '14 Rennie St Thornbury VIC', '0321343123', '1337', 
+VALUES (PersonT('01958652', 'Doe', 'John', 'Mr', '64 Austin St Holow VIC', '0321343123', '1337', 
           (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
--- additional staff over
+INSERT INTO Person 
+VALUES (PersonT('10008957', 'Jane', 'Patrick', 'Mr', '23 Rainbow Rd Allumy VIC', '0236263636', '3033', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
+INSERT INTO Person 
+VALUES (PersonT('10005825', 'Gibbs', 'Lewroy', 'Mr', '127 Moltres Way Jotho VIC', '0285624733', '3042', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
+INSERT INTO Person 
+VALUES (PersonT('10015826', 'Beckett', 'Kate', 'Ms', '42 Donestry St Jibisy VIC', '0263957394', '3087', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
+INSERT INTO Person 
+VALUES (PersonT('10000255', 'Morgan', 'Henry', 'Mr', '2 London Ave Karrigan VIC', '0395182649', '3062', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
+INSERT INTO Person 
+VALUES (PersonT('10000258', 'Flow', 'Max', 'Mr', '26 Hollow Tips St Precidense VIC', '0492849184', '3012', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
+INSERT INTO Person 
+VALUES (PersonT('10006935', 'Gunn', 'Montgomery', 'Mr', '65 Arrow Ave Catery VIC', '0492847294', '3085', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
+INSERT INTO Person 
+VALUES (PersonT('10012568', 'Shields', 'Duncan', 'Mr', '13 Flame St Seaside VIC', '0195837592', '3037', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
+-- additional Staff over
 
-INSERT INTO Staff (SELECT * FROM (SELECT pers.*, 'BG212', 'Lecturer' FROM Person pers WHERE pers.person_id = 10008895));
-INSERT INTO Staff (SELECT * FROM (SELECT pers.*, 'BG210', 'Admin' FROM Person pers WHERE pers.person_id = 10002935));
+INSERT INTO Staff (SELECT pers.*, 'BG212', 'Lecturer' FROM Person pers WHERE pers.person_id = 10008895);
+INSERT INTO Staff (SELECT pers.*, 'BG210', 'Admin' FROM Person pers WHERE pers.person_id = 10002935);
+-- additional Staff needed for Subtypes
+INSERT INTO Staff (SELECT pers.*, 'BG221', 'Admin' FROM Person pers WHERE pers.person_id = 10008957);
+INSERT INTO Staff (SELECT pers.*, 'BG231', 'Technician' FROM Person pers WHERE pers.person_id = 10005825);
+INSERT INTO Staff (SELECT pers.*, 'BG232', 'Technician' FROM Person pers WHERE pers.person_id = 10015826);
+INSERT INTO Staff (SELECT pers.*, 'BG225', 'Lecturer' FROM Person pers WHERE pers.person_id = 10000255);
+INSERT INTO Staff (SELECT pers.*, 'BG226', 'Lecturer' FROM Person pers WHERE pers.person_id = 10000258);
+INSERT INTO Staff (SELECT pers.*, 'BG225', 'Lecturer' FROM Person pers WHERE pers.person_id = 10006935);
+INSERT INTO Staff (SELECT pers.*, 'BG265', 'Tutor' FROM Person pers WHERE pers.person_id = 01234234);
+INSERT INTO Staff (SELECT pers.*, 'BG265', 'Tutor' FROM Person pers WHERE pers.person_id = 01958652);
+-- additional Subtypes over
 
-INSERT INTO Student (SELECT * FROM (SELECT pers.*, 2000 FROM Person pers WHERE pers.person_id = 01234234));
-INSERT INTO Student (SELECT * FROM (SELECT pers.*, 2000 FROM Person pers WHERE pers.person_id = 01958652));
+INSERT INTO Student (SELECT pers.*, 2000 FROM Person pers WHERE pers.person_id = 01234234);
+INSERT INTO Student (SELECT pers.*, 2000 FROM Person pers WHERE pers.person_id = 01958652);
+-- additional Student needed for Enrolls_in / Takes
+INSERT INTO Student (SELECT pers.*, 1995 FROM Person pers WHERE pers.person_id = 10012568);
+-- additional Students over
 
-INSERT INTO AdminTbl (SELECT * FROM (SELECT staff.*, 'Office Manager', ComputerskillsT(), OfficeskillsT() FROM Staff staff WHERE staff.person_id = 10002935));
--- done
--- TODO Fix statements underneath (missing entries in Person / Staff / etc. Tables)
-INSERT INTO AdminTbl (SELECT * FROM (SELECT staff.*, 'Receptionist', ComputerskillsT(), OfficeskillsT() FROM Staff staff WHERE staff.person_id = 10008957));
+INSERT INTO AdminTbl (SELECT staff.*, 'Office Manager', ComputerskillsT(), OfficeskillsT() FROM Staff staff WHERE staff.person_id = 10002935);
+INSERT INTO AdminTbl (SELECT staff.*, 'Receptionist', ComputerskillsT(), OfficeskillsT() FROM Staff staff WHERE staff.person_id = 10008957);
  
 INSERT INTO TABLE (SELECT admin_officeskills FROM AdminTbl WHERE person_id = '10002935')
 VALUES('Managerial');
-/* -- TODO Create Person and Staff with that ID
 INSERT INTO TABLE (SELECT admin_computerskills FROM AdminTbl WHERE person_id = '10008957')
 VALUES('MS Office');
 INSERT INTO TABLE (SELECT admin_officeskills FROM AdminTbl WHERE person_id = '10008957')
 VALUES('Customer Service');
 INSERT INTO TABLE (SELECT admin_officeskills FROM AdminTbl WHERE person_id = '10008957')
 VALUES('Phone');
-*/
 
-INSERT INTO Technician (SELECT * FROM (SELECT staff.*, 'Network Officer', TechnicianskillsT() FROM Staff staff WHERE staff.person_id = 10005825));
-INSERT INTO Technician (SELECT * FROM (SELECT staff.*, 'Photocopy Technician', TechnicianskillsT() FROM Staff staff WHERE staff.person_id = 10015826));
+INSERT INTO Technician (SELECT staff.*, 'Network Officer', TechnicianskillsT() FROM Staff staff WHERE staff.person_id = 10005825);
+INSERT INTO Technician (SELECT staff.*, 'Photocopy Technician', TechnicianskillsT() FROM Staff staff WHERE staff.person_id = 10015826);
 
-/* -- TODO Create Person and Staff with that IDs
 INSERT INTO TABLE (SELECT tech_skills FROM Technician WHERE person_id = '10005825')
 VALUES('UNIX');
 INSERT INTO TABLE (SELECT tech_skills FROM Technician WHERE person_id = '10005825')
 VALUES('NT');
 INSERT INTO TABLE (SELECT tech_skills FROM Technician WHERE person_id = '10015826')
 VALUES('Electrician');
-*/
 
-INSERT INTO Lecturer (SELECT * FROM (SELECT staff.*, 'Software Engineering', 'Associate' FROM Staff staff WHERE staff.person_id = 10008895));
-INSERT INTO Lecturer (SELECT * FROM (SELECT staff.*, 'Business Information', 'Senior' FROM Staff staff WHERE staff.person_id = 10000255));
+INSERT INTO Lecturer (SELECT staff.*, 'Software Engineering', 'Associate' FROM Staff staff WHERE staff.person_id = 10008895);
+INSERT INTO Lecturer (SELECT staff.*, 'Business Information', 'Senior' FROM Staff staff WHERE staff.person_id = 10000255);
+-- additional Lecturers needed for Sub-Lecturers
+INSERT INTO Lecturer (SELECT staff.*, 'Business Administration', 'Senior' FROM Staff staff WHERE staff.person_id = 10000258);
+INSERT INTO Lecturer (SELECT staff.*, 'Software Development', 'Associate' FROM Staff staff WHERE staff.person_id = 10006935);
+-- additional Sub-Lecturers over
 
-INSERT INTO SeniorLecturer (SELECT * FROM (SELECT lec.*, 2, 5, 7 FROM Lecturer lec WHERE lec.person_id = 10000255));
-INSERT INTO SeniorLecturer (SELECT * FROM (SELECT lec.*, NULL, 1, 5 FROM Lecturer lec WHERE lec.person_id = 10000258));
+INSERT INTO SeniorLecturer (SELECT lec.*, 2, 5, 7 FROM Lecturer lec WHERE lec.person_id = 10000255);
+INSERT INTO SeniorLecturer (SELECT lec.*, NULL, 1, 5 FROM Lecturer lec WHERE lec.person_id = 10000258);
 
-INSERT INTO AssociateLecturer (SELECT * FROM (SELECT lec.*, 2, 1999 FROM Lecturer lec WHERE lec.person_id = 10008895));
-INSERT INTO AssociateLecturer (SELECT * FROM (SELECT lec.*, NULL, 2001 FROM Lecturer lec WHERE lec.person_id = 10006935));
+INSERT INTO AssociateLecturer (SELECT lec.*, 2, 1999 FROM Lecturer lec WHERE lec.person_id = 10008895);
+INSERT INTO AssociateLecturer (SELECT lec.*, NULL, 2001 FROM Lecturer lec WHERE lec.person_id = 10006935);
 
-INSERT INTO Tutor (SELECT * FROM (SELECT staff.*, 10, 20.00 FROM Staff staff WHERE staff.person_id = 01234234));
-INSERT INTO Tutor (SELECT * FROM (SELECT staff.*, 30, 35.00 FROM Staff staff WHERE staff.person_id = 01958652));
+INSERT INTO Tutor (SELECT staff.*, 10, 20.00 FROM Staff staff WHERE staff.person_id = 01234234);
+INSERT INTO Tutor (SELECT staff.*, 30, 35.00 FROM Staff staff WHERE staff.person_id = 01958652);
 
 INSERT INTO Subject 
 VALUES (SubjectT('CSE21NET', 'Networking', 10, 'CSE11IS', 
@@ -193,8 +225,8 @@ INSERT INTO Subject
 VALUES (SubjectT('CSE42ADB', 'Advanced Database', 15, 'CSE21DB',
           (SELECT REF(p) FROM Person p WHERE p.person_id='10006935')));
 
-INSERT INTO Enrolls_in VALUES ('01234234', 'D101');
-INSERT INTO Enrolls_in VALUES ('10012568', 'D101');
+INSERT INTO Enrolls_in VALUES ((SELECT REF(s) FROM Student s WHERE s.person_id='01234234'), (SELECT REF(d) FROM DegreeTbl d WHERE d.deg_id='D101'));
+INSERT INTO Enrolls_in VALUES ((SELECT REF(s) FROM Student s WHERE s.person_id='10012568'), (SELECT REF(d) FROM DegreeTbl d WHERE d.deg_id='D101'));
 
-INSERT INTO Takes VALUES ('01234234', 'CSE42ADB', 70);
-INSERT INTO Takes VALUES ('10012568', 'CSE42ADB', 80);
+INSERT INTO Takes VALUES ((SELECT REF(s) FROM Student s WHERE s.person_id='01234234'), (SELECT REF(s) FROM Subject s WHERE s.subject_id='CSE42ADB'), 70);
+INSERT INTO Takes VALUES ((SELECT REF(st) FROM Student st WHERE st.person_id='10012568'), (SELECT REF(su) FROM Subject su WHERE su.subject_id='CSE42ADB'), 80);

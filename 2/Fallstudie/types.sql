@@ -21,7 +21,8 @@ CREATE TYPE ResearchCentreListT AS TABLE OF ResearchCentreT;
 -- TODO aggregation clustering technique
 CREATE TYPE FacultyT AS OBJECT (fac_id INTEGER, fac_name VARCHAR(31), fac_dean VARCHAR(15), dept DepartmentListT, school SchoolListT, rc ResearchCentreListT);
 /
-CREATE TYPE BuildingT AS OBJECT (bld_id VARCHAR(4), bld_name VARCHAR(31), bld_location VARCHAR(2), bld_level INTEGER, campus REF CampusT, fac REF FacultyT);
+CREATE TYPE BuildingT AS OBJECT (bld_id VARCHAR(4), bld_name VARCHAR(31), bld_location VARCHAR(2), bld_level INTEGER, campus REF CampusT, fac REF FacultyT, MEMBER PROCEDURE show_bld_details);
+-- CREATE TYPE BODY BuildingT AS MEMBER PROCEDURE show_bld_details IS ...
 /
 CREATE TYPE PersonT AS OBJECT (person_id VARCHAR(8), person_surname VARCHAR(15), person_forename VARCHAR(15), person_title VARCHAR(7), person_addr VARCHAR(127), person_phone VARCHAR(15), person_postcode VARCHAR(5), campus REF CampusT) NOT FINAL;
 /
@@ -43,11 +44,12 @@ CREATE TYPE TechnicianskillsT AS TABLE OF VARCHAR(15);
 /
 CREATE TYPE StaffT UNDER PersonT (office_No VARCHAR(7), staff_type VARCHAR(15)) NOT FINAL;
 /
-CREATE TYPE StudentT UNDER PersonT (student_year INTEGER);
+CREATE TYPE StudentT UNDER PersonT (student_year INTEGER, MEMBER PROCEDURE insert_student, MEMBER PROCEDURE delete_student);
+-- CREATE TYPE BODY StudentT AS MEMBER PROCEDURE insert_student IS ...
 /
 CREATE TYPE AdminT UNDER StaffT (admin_title VARCHAR(31), admin_computerskills ComputerskillsT, admin_officeskills OfficeskillsT);
 /
-CREATE TYPE TechnicianT UNDER StaffT (tech_title VARCHAR(15), tech_skills TechnicianskillsT);
+CREATE TYPE TechnicianT UNDER StaffT (tech_title VARCHAR(31), tech_skills TechnicianskillsT);
 / 
 CREATE TYPE TutorT UNDER StaffT (tutor_hours INTEGER, tutor_rate DOUBLE PRECISION);
 /

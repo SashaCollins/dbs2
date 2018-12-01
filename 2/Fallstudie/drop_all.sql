@@ -1,4 +1,6 @@
 -- tables
+DROP TABLE Takes;
+DROP TABLE Enrolls_in;
 DROP TABLE Subject;
 DROP TABLE AssociateLecturer;
 DROP TABLE SeniorLecturer;
@@ -17,8 +19,6 @@ DROP TABLE Building;
 DROP TABLE Faculty;
 DROP TABLE Professor;
 DROP TABLE Campus;
-DROP TABLE Takes;
-DROP TABLE Enrolls_in;
 
 -- types
 DROP TYPE SubjectT;

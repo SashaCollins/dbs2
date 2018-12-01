@@ -1,7 +1,3 @@
-CREATE TABLE Enrolls_in (student_id VARCHAR(8), deg_id VARCHAR(4));
-
-CREATE TABLE Takes (student_id VARCHAR(8), subject_id VARCHAR(8), mark INTEGER);
-
 CREATE TABLE Campus OF CampusT;
 
 CREATE TABLE Professor OF ProfessorT;
@@ -44,3 +40,7 @@ CREATE TABLE SeniorLecturer OF SeniorLecturerT;
 CREATE TABLE AssociateLecturer OF AssociateLecturerT;
 
 CREATE TABLE Subject OF SubjectT;
+
+CREATE TABLE Enrolls_in (student REF StudentT, deg REF DegreeT);
+
+CREATE TABLE Takes (student REF StudentT, subject REF SubjectT, mark INTEGER);
