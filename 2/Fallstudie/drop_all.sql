@@ -2,19 +2,19 @@
 DROP TABLE Takes;
 DROP TABLE Enrolls_in;
 DROP TABLE Subject;
-DROP TABLE AssociateLecturer;
+/* DROP TABLE AssociateLecturer;
 DROP TABLE SeniorLecturer;
 DROP TABLE Lecturer;
 DROP TABLE Tutor;
 DROP TABLE Technician;
-DROP TABLE AdminTbl;
+DROP TABLE AdminTbl; */
 DROP TABLE Student;
 DROP TABLE Staff;
 DROP TABLE DegreeTbl;
 DROP TABLE Lab;
 DROP TABLE Classroom;
 DROP TABLE Office;
-DROP TABLE Person;
+-- DROP TABLE Person;
 DROP TABLE Building;
 DROP TABLE Faculty;
 DROP TABLE Professor;

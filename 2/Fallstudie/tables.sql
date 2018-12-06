@@ -9,7 +9,7 @@ NESTED TABLE rc STORE AS rc_nm(NESTED TABLE rc_unit STORE AS rc_unit_nm);
 
 CREATE TABLE Building OF BuildingT;
 
-CREATE TABLE Person OF PersonT;
+-- CREATE TABLE Person OF PersonT;
 
 CREATE TABLE Office OF OfficeT;
 
@@ -24,7 +24,7 @@ CREATE TABLE Staff OF StaffT;
 
 CREATE TABLE Student OF StudentT;
 
-CREATE TABLE AdminTbl OF AdminT
+/* CREATE TABLE AdminTbl OF AdminT
 NESTED TABLE admin_computerskills STORE AS adm_comskill_nm
 NESTED TABLE admin_officeskills STORE AS adm_offskill_nm;
 
@@ -37,7 +37,7 @@ CREATE TABLE Lecturer OF LecturerT;
 
 CREATE TABLE SeniorLecturer OF SeniorLecturerT;
 
-CREATE TABLE AssociateLecturer OF AssociateLecturerT;
+CREATE TABLE AssociateLecturer OF AssociateLecturerT; */
 
 CREATE TABLE Subject OF SubjectT;
 

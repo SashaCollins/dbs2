@@ -124,65 +124,50 @@ INSERT INTO DegreeTbl
 VALUES (DegreeT('D101', 'Master of Comp. Sci', 2, 'Bachelor of Comp. Sci', 
           (SELECT REF(f) FROM Faculty f WHERE f.fac_id=4)));
 
-INSERT INTO Person 
-VALUES (PersonT('01234234', 'Grant', 'Felix', 'Mr', '2 Boadle Rd Bundoora VIC', '0398548753', '3083', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora')));
-INSERT INTO Person 
-VALUES (PersonT('10008895', 'Xin', 'Harry', 'Mr', '6 Kelley St Kew VIC', 
-          '0398875542', '3088', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora')));
-INSERT INTO Person 
-VALUES (PersonT('10002935', 'Jones', 'Felicity', 'Ms', '14 Rennie St Thornbury VIC', '0398722001', '3071', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora')));
--- additional People needed for Staff
-INSERT INTO Person 
-VALUES (PersonT('01958652', 'Doe', 'John', 'Mr', '64 Austin St Holow VIC', '0321343123', '1337', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
-INSERT INTO Person 
-VALUES (PersonT('10008957', 'Jane', 'Patrick', 'Mr', '23 Rainbow Rd Allumy VIC', '0236263636', '3033', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
-INSERT INTO Person 
-VALUES (PersonT('10005825', 'Gibbs', 'Lewroy', 'Mr', '127 Moltres Way Jotho VIC', '0285624733', '3042', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
-INSERT INTO Person 
-VALUES (PersonT('10015826', 'Beckett', 'Kate', 'Ms', '42 Donestry St Jibisy VIC', '0263957394', '3087', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
-INSERT INTO Person 
-VALUES (PersonT('10000255', 'Morgan', 'Henry', 'Mr', '2 London Ave Karrigan VIC', '0395182649', '3062', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
-INSERT INTO Person 
-VALUES (PersonT('10000258', 'Flow', 'Max', 'Mr', '26 Hollow Tips St Precidense VIC', '0492849184', '3012', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
-INSERT INTO Person 
-VALUES (PersonT('10006935', 'Gunn', 'Montgomery', 'Mr', '65 Arrow Ave Catery VIC', '0492847294', '3085', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura')));
-INSERT INTO Person 
-VALUES (PersonT('10012568', 'Shields', 'Duncan', 'Mr', '13 Flame St Seaside VIC', '0195837592', '3037', 
-          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City')));
--- additional Staff over
-
-INSERT INTO Staff (SELECT pers.*, 'BG212', 'Lecturer' FROM Person pers WHERE pers.person_id = 10008895);
-INSERT INTO Staff (SELECT pers.*, 'BG210', 'Admin' FROM Person pers WHERE pers.person_id = 10002935);
--- additional Staff needed for Subtypes
-INSERT INTO Staff (SELECT pers.*, 'BG221', 'Admin' FROM Person pers WHERE pers.person_id = 10008957);
-INSERT INTO Staff (SELECT pers.*, 'BG231', 'Technician' FROM Person pers WHERE pers.person_id = 10005825);
-INSERT INTO Staff (SELECT pers.*, 'BG232', 'Technician' FROM Person pers WHERE pers.person_id = 10015826);
-INSERT INTO Staff (SELECT pers.*, 'BG225', 'Lecturer' FROM Person pers WHERE pers.person_id = 10000255);
-INSERT INTO Staff (SELECT pers.*, 'BG226', 'Lecturer' FROM Person pers WHERE pers.person_id = 10000258);
-INSERT INTO Staff (SELECT pers.*, 'BG225', 'Lecturer' FROM Person pers WHERE pers.person_id = 10006935);
-INSERT INTO Staff (SELECT pers.*, 'BG265', 'Tutor' FROM Person pers WHERE pers.person_id = 01234234);
-INSERT INTO Staff (SELECT pers.*, 'BG265', 'Tutor' FROM Person pers WHERE pers.person_id = 01958652);
--- additional Subtypes over
-
-INSERT INTO Student (SELECT pers.*, 2000 FROM Person pers WHERE pers.person_id = 01234234);
-INSERT INTO Student (SELECT pers.*, 2000 FROM Person pers WHERE pers.person_id = 01958652);
+INSERT INTO Student VALUES ('01234234', 'Grant', 'Felix', 'Mr', '2 Boadle Rd Bundoora VIC', '0398548753', '3083', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora'), 2000);
+		  
+INSERT INTO Student VALUES ('01958652', 'Doe', 'John', 'Mr', '64 Austin St Holow VIC', '0321343123', '1337', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City'), 2000);
 -- additional Student needed for Enrolls_in / Takes
-INSERT INTO Student (SELECT pers.*, 1995 FROM Person pers WHERE pers.person_id = 10012568);
+INSERT INTO Student VALUES ('10012568', 'Shields', 'Duncan', 'Mr', '13 Flame St Seaside VIC', '0195837592', '3037', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City'), 1995);
 -- additional Students over
 
-INSERT INTO AdminTbl (SELECT staff.*, 'Office Manager', ComputerskillsT(), OfficeskillsT() FROM Staff staff WHERE staff.person_id = 10002935);
-INSERT INTO AdminTbl (SELECT staff.*, 'Receptionist', ComputerskillsT(), OfficeskillsT() FROM Staff staff WHERE staff.person_id = 10008957);
- 
+-- new
+-- todo missing treat
+INSERT INTO Staff VALUES ('01234234', 'Grant', 'Felix', 'Mr', '2 Boadle Rd Bundoora VIC', '0398548753', '3083', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora'), 'BG265', 'Tutor', 10, 20.00);
+
+INSERT INTO Staff VALUES ('10008895', 'Xin', 'Harry', 'Mr', '6 Kelley St Kew VIC', '0398875542', '3088', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora'),  'BG212', 'Lecturer', 'Software Engineering', 'Associate', 2, 1999);
+
+INSERT INTO Staff VALUES ('10002935', 'Jones', 'Felicity', 'Ms', '14 Rennie St Thornbury VIC', '0398722001', '3071', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Bundoora'), 'BG210', 'Admin', 'Office Manager', ComputerskillsT(), OfficeskillsT());
+
+INSERT INTO Staff VALUES ('01958652', 'Doe', 'John', 'Mr', '64 Austin St Holow VIC', '0321343123', '1337', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City'), 'BG265', 'Tutor', 30, 35.00);
+
+INSERT INTO Staff VALUES ('10008957', 'Jane', 'Patrick', 'Mr', '23 Rainbow Rd Allumy VIC', '0236263636', '3033', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City'), 'BG221', 'Admin', 'Receptionist', ComputerskillsT(), OfficeskillsT());
+
+INSERT INTO Staff VALUES ('10005825', 'Gibbs', 'Lewroy', 'Mr', '127 Moltres Way Jotho VIC', '0285624733', '3042', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura'), 'BG231', 'Technician', 'Network Officer', TechnicianskillsT());
+
+INSERT INTO Staff VALUES ('10015826', 'Beckett', 'Kate', 'Ms', '42 Donestry St Jibisy VIC', '0263957394', '3087', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura'), 'BG232', 'Technician', 'Photocopy Technician', TechnicianskillsT());
+
+INSERT INTO Staff VALUES ('10000255', 'Morgan', 'Henry', 'Mr', '2 London Ave Karrigan VIC', '0395182649', '3062', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='City'), 'BG225', 'Lecturer', 'Business Information', 'Senior', 2, 5, 7);
+
+INSERT INTO Staff VALUES ('10000258', 'Flow', 'Max', 'Mr', '26 Hollow Tips St Precidense VIC', '0492849184', '3012', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura'), 'BG226', 'Lecturer', 'Business Administration', 'Senior', NULL, 1, 5 );
+
+INSERT INTO Staff VALUES ('10006935', 'Gunn', 'Montgomery', 'Mr', '65 Arrow Ave Catery VIC', '0492847294', '3085', 
+          (SELECT REF(c) FROM Campus c WHERE c.campus_location='Mildura'), 'BG225', 'Lecturer', 'Software Development', 'Associate', NULL, 2001);
+-- old
+
+-- todo correct inserts for inner tables
 INSERT INTO TABLE (SELECT admin_officeskills FROM AdminTbl WHERE person_id = '10002935')
 VALUES('Managerial');
 INSERT INTO TABLE (SELECT admin_computerskills FROM AdminTbl WHERE person_id = '10008957')
@@ -192,9 +177,6 @@ VALUES('Customer Service');
 INSERT INTO TABLE (SELECT admin_officeskills FROM AdminTbl WHERE person_id = '10008957')
 VALUES('Phone');
 
-INSERT INTO Technician (SELECT staff.*, 'Network Officer', TechnicianskillsT() FROM Staff staff WHERE staff.person_id = 10005825);
-INSERT INTO Technician (SELECT staff.*, 'Photocopy Technician', TechnicianskillsT() FROM Staff staff WHERE staff.person_id = 10015826);
-
 INSERT INTO TABLE (SELECT tech_skills FROM Technician WHERE person_id = '10005825')
 VALUES('UNIX');
 INSERT INTO TABLE (SELECT tech_skills FROM Technician WHERE person_id = '10005825')
@@ -202,22 +184,7 @@ VALUES('NT');
 INSERT INTO TABLE (SELECT tech_skills FROM Technician WHERE person_id = '10015826')
 VALUES('Electrician');
 
-INSERT INTO Lecturer (SELECT staff.*, 'Software Engineering', 'Associate' FROM Staff staff WHERE staff.person_id = 10008895);
-INSERT INTO Lecturer (SELECT staff.*, 'Business Information', 'Senior' FROM Staff staff WHERE staff.person_id = 10000255);
--- additional Lecturers needed for Sub-Lecturers
-INSERT INTO Lecturer (SELECT staff.*, 'Business Administration', 'Senior' FROM Staff staff WHERE staff.person_id = 10000258);
-INSERT INTO Lecturer (SELECT staff.*, 'Software Development', 'Associate' FROM Staff staff WHERE staff.person_id = 10006935);
--- additional Sub-Lecturers over
-
-INSERT INTO SeniorLecturer (SELECT lec.*, 2, 5, 7 FROM Lecturer lec WHERE lec.person_id = 10000255);
-INSERT INTO SeniorLecturer (SELECT lec.*, NULL, 1, 5 FROM Lecturer lec WHERE lec.person_id = 10000258);
-
-INSERT INTO AssociateLecturer (SELECT lec.*, 2, 1999 FROM Lecturer lec WHERE lec.person_id = 10008895);
-INSERT INTO AssociateLecturer (SELECT lec.*, NULL, 2001 FROM Lecturer lec WHERE lec.person_id = 10006935);
-
-INSERT INTO Tutor (SELECT staff.*, 10, 20.00 FROM Staff staff WHERE staff.person_id = 01234234);
-INSERT INTO Tutor (SELECT staff.*, 30, 35.00 FROM Staff staff WHERE staff.person_id = 01958652);
-
+-- should work from here
 INSERT INTO Subject 
 VALUES (SubjectT('CSE21NET', 'Networking', 10, 'CSE11IS', 
           (SELECT REF(p) FROM Person p WHERE p.person_id='10008895')));
