@@ -23,24 +23,25 @@ CREATE OR REPLACE FUNCTION min_max_scale(v IN INT, new_min IN INT, new_max IN IN
 
 BEGIN 
 
-new_v := ((v - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;  -- min max impl
-RETURN(new_v); 
+	new_v := ((v - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;  -- min max impl
+	RETURN(new_v); 
 
 END min_max_scale;
 /
 
 CREATE OR REPLACE PROCEDURE MinMax_Scaling (new_min INT, new_max INT) IS 
-old_min INT;
-old_max INT;
-new_age INT;
+	old_min INT;
+	old_max INT;
+	new_age INT;
+	
 BEGIN
-SELECT MIN(person_age) as min_age, MAX(person_age) as max_age INTO old_min, old_max FROM People; -- get min and max
+	SELECT MIN(person_age) as min_age, MAX(person_age) as max_age INTO old_min, old_max FROM People; -- get min and max
 
-FOR person IN (SELECT * FROM People)
-LOOP
-  SELECT min_max_scale(person.person_age, new_min, new_max, old_min, old_max) INTO new_age FROM DUAL;
-  UPDATE People SET person_age = new_age WHERE person_id = person.person_id;
-END LOOP;
+	FOR person IN (SELECT * FROM People)
+	LOOP
+		new_age := min_max_scale(person.person_age, new_min, new_max, old_min, old_max);
+		UPDATE People SET person_age = new_age WHERE person_id = person.person_id;
+	END LOOP;
 END;
 /
 
