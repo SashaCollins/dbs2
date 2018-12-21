@@ -1,27 +1,20 @@
-CREATE TABLE Employee (
-  emp_nr INT NOT NULL,
-  name VARCHAR(63), -- surname, forname
-  dob VARCHAR(8),  -- yy/mm/dd
-  job_title VARCHAR(63),
-  salery_month DOUBLE PRECISION,
-  gender VARCHAR(9),  -- männlich / weiblich
-  CONSTRAINT employee_nr PRIMARY KEY (emp_nr)
-);
+--SELECT REGEXP_SUBSTR('Bauer, Hans',
+--	'([a-Z[:space:]]+), ([a-Z[:space:]]+)') AS name
+--FROM DUAL;  -- not needed
 
-CREATE TABLE Worker (
-  surname VARCHAR(31),
-  forename VARCHAR(31),
-  birth_month VARCHAR(5),  -- mm.yy
-  salary_hour DOUBLE PRECISION
-);
+CREATE OR REPLACE PROCEDURE merge_staff IS
+	staff_name VARCHAR(31);  -- name, vorname
+	surname VARCHAR(31);
+	forename VARCHAR(31);
+	
+BEGIN
+	
+	staff_name := 'Bauer, Hans';
+	SELECT SUBSTR(staff_name, 1, Instr(staff_name, ',', -1, 1) -1),
+		   SUBSTR(staff_name, Instr(staff_name, ',', -1, 1) +2)
+	INTO surname, forename
+	FROM DUAL;
+END;
+/
 
-CREATE TABLE Staff (
-  staff_nr INT NOT NULL,
-  surname VARCHAR(31),
-  forename VARCHAR(31),
-  age INT,
-  gender INT,  -- 0 = unknown, 1 = female, 2 = male
-  job_code VARCHAR(7),
-  salary_year DOUBLE PRECISION,
-  CONSTRAINT s_nr PRIMARY KEY (staff_nr)
-);
+EXECUTE MERGE_STAFF();
