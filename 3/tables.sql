@@ -1,4 +1,4 @@
-CREATE TABLE Employee (
+﻿CREATE TABLE Employee (
 	emp_nr INT NOT NULL,
 	name VARCHAR(31), -- surname, forname
 	dob VARCHAR(8),  -- yy/mm/dd
@@ -40,5 +40,6 @@ CREATE TABLE Jobcode (
 
 CREATE TABLE Source (
 	staff_nr INT,
-	source_table VARCHAR(1) -- e = Employee, w = Worker
+	source_table VARCHAR(1), -- e = Employee, w = Worker
+	original_primary_key VARCHAR(10) -- Problem: Worker has no Primary Key, how to identify?
 );
