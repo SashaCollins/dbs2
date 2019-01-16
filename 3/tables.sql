@@ -16,7 +16,7 @@ CREATE TABLE Worker (
 );
 
 CREATE TABLE Staff (
-	staff_nr INT NOT NULL,
+	staff_nr INTEGER NOT NULL,
 	surname VARCHAR(31),
 	forename VARCHAR(31),
 	age INT,
@@ -26,20 +26,19 @@ CREATE TABLE Staff (
 	CONSTRAINT s_nr PRIMARY KEY (staff_nr)
 );
 
+CREATE TABLE Jobcode (
+	code INTEGER PRIMARY KEY,
+	description VARCHAR(63)
+);
+
 CREATE TABLE Gender (
 	forename VARCHAR(31),
 	gender VARCHAR(1),  -- 1 = female, 2 = male
 	CONSTRAINT gender_entry PRIMARY KEY (forename, gender)
 );
 
-CREATE TABLE Jobcode (
-	job_code VARCHAR(7),
-	job_title VARCHAR(63),
-	CONSTRAINT jobcode_entry PRIMARY KEY (job_code, job_title)
-);
-
-CREATE TABLE Source (
-	staff_nr INT,
+CREATE TABLE Identifier (
+	staff_nr INTEGER,
 	source_table VARCHAR(1), -- e = Employee, w = Worker
-	original_primary_key VARCHAR(10) -- Problem: Worker has no Primary Key, how to identify?
+	pk VARCHAR(63) -- Employee: emp_nr, Worker: Forename + Surname
 );

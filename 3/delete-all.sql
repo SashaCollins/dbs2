@@ -15,6 +15,8 @@ DROP PROCEDURE split_date_emp;
 -- Tables
 DROP TABLE Source;
 DROP TABLE Jobcode;
+DROP TABLE Gender;
+DROP TABLE Code;
 DROP TABLE Staff;
 DROP TABLE Worker;
 DROP TABLE Employee;
