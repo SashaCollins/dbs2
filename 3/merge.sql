@@ -142,71 +142,63 @@ BEGIN
 END;
 /
 
--- return 0, 1 or 2
-CREATE OR REPLACE PROCEDURE gendermapping(forname IN VARCHAR, gender OUT VARCHAR)
+CREATE OR REPLACE PROCEDURE gender_mapping(fname IN VARCHAR, gen OUT VARCHAR)
 IS	answer INTEGER;
-    fn VARCHAR(31);
 BEGIN  
-  -- if w then look for name in gender table
-  -- if 1 entry use this (2 or 1)
-  -- else use 0
+  -- if name only once in TABLE Gender then use this gender -> 1, 2
+  -- else gender is unknown -> 0
   
-  
-    -- does not work like this
 	SELECT COUNT(*)
 	INTO answer
-	FROM Gender  g 
-	WHERE g.forname = forname;
+	FROM Gender g 
+	WHERE g.forename = fname;
 	 
 	IF answer = 1 THEN
-    fn := forename;
-    --gender := select gender from table
+		SELECT g.gender INTO gen
+		FROM Gender g
+		WHERE g.forename = fname;
 	ELSE
-    
-    gender := 0;
+		gen := 0;
 	END IF;
-
 END;
 /
-
-CREATE OR REPLACE PROCEDURE gender_evaluetion(forename IN VARCHAR, gender IN OUT VARCHAR)
+-- this is only for employees
+CREATE OR REPLACE PROCEDURE gender_evaluation(fname IN VARCHAR, gen IN OUT VARCHAR)
 IS answer INTEGER;
 BEGIN
 	-- if e then map m, w to 2, 1
 	-- check if already in gender table
-	-- if false then insert into gendertable
-	-- else 
+	-- if false then insert into TABLE Gender
 	-- return 2 or 1
 	
-	IF gender = 'w' THEN
-		gender := 1;
+	IF gen = 'weiblich' THEN
+		gen := '1';
 	ELSE	
-		IF gender = 'm' THEN
-			gender := 2;
+		IF gen = 'männlich' THEN
+			gen := '2';
 		END IF;
 	END IF;
 	
 	SELECT COUNT(*)
 	INTO answer
 	FROM Gender g 
-	WHERE g.forname = forname AND g.gender = gender;
-	
+	WHERE g.forename = fname AND g.gender = gen;
+  
 	IF answer = 0 THEN
-	-- insert
+		INSERT INTO Gender VALUES (fname, gen);
+    COMMIT;
 	END IF;
-	
-
 END;
 /
 
 CREATE OR REPLACE PROCEDURE annual_income(income IN OUT INTEGER, source IN VARCHAR)
 IS 
 BEGIN
-	IF (source == 'e') THEN
-		income := income * 12
+	IF (source = 'e') THEN
+		income := income * 12;
 	ELSE 
-		IF (source == 'w')	THEN
-			income := income * 12 * (8 * 5 * 4.3)
+		IF (source = 'w')	THEN
+			income := income * 12 * (8 * 5 * 4.3);
 		END IF;
 	END IF;
 END;
@@ -215,7 +207,7 @@ END;
 CREATE OR REPLACE PROCEDURE generate_id(digits IN INTEGER, new_id IN OUT INTEGER)
 IS
   max_nr INTEGER := 9;
-  id_str VARCHAR(9);
+  id_str VARCHAR(10);
   cur_nr INTEGER;
   starts_with_zero BOOLEAN;
 BEGIN
@@ -249,22 +241,74 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE PROCEDURE get_staffnr(identify IN VARCHAR, staff_nr IN OUT INTEGER)
+IS  results INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO results FROM Identifier WHERE pk = identify;
+  
+  IF results = 0 THEN
+    generate_id(9, staff_nr);
+  ELSE
+    SELECT src.staff_nr INTO staff_nr FROM Identifier src WHERE pk = identify;
+  END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE concat_name(forename IN VARCHAR, surname IN VARCHAR, fullname IN OUT VARCHAR)
+IS
+BEGIN
+  fullname := CONCAT(CONCAT(forename, ' '), surname);
+END;
+/
+
+CREATE OR REPLACE PROCEDURE merge_employees IS 
+	old_min INT;
+	old_max INT;
+	new_age INT;
+	
+BEGIN
+	FOR employee IN (SELECT * FROM Employee) LOOP
+		dbms_output.put_line(employee.emp_nr || ' ' || employee.name);
+	END LOOP;
+END;
+/
+
 CREATE OR REPLACE PROCEDURE merge_staff
-IS  surname  VARCHAR(31);
+IS  staff_nr INTEGER;
+    surname  VARCHAR(31);
     forename VARCHAR(31);
+    fullname VARCHAR(63);
     age INTEGER;
+    gender VARCHAR(10);
+    job_code INTEGER;
     income INTEGER;
 BEGIN
+    get_staffnr('Hans Bauer', staff_nr);
+    dbms_output.put_line(staff_nr);
     split_name('Bauer, Hans', surname, forename);
     dbms_output.put_line(forename || ' ' || surname);
+    concat_name('Rainer', 'Wahnsinn', fullname);
+    dbms_output.put_line(fullname);
     dob_age_emp('96/5/4', age);
     dbms_output.put_line(age);
-	dob_age_wor('1.96', age);
-    dbms_output.put_line(age)
+    dob_age_wor('1.96', age);
+    dbms_output.put_line(age);
     get_jobcode('Some Job', job_code);
     dbms_output.put_line(job_code);
-	dob_age_wor('5.96', age);
-    dbms_output.put_line(age);
+    dob_age_wor('5.96', age);
+    dbms_output.put_line(age);  
+    gender := 'männlich';
+    gender_evaluation('Horst', gender);
+    dbms_output.put_line('gender' || ' ' || gender);
+    gender := 'weiblich';
+    gender_evaluation('Frauke', gender);
+    dbms_output.put_line('gender' || ' ' || gender);   
+    gender := '';
+    gender_mapping('Frauke', gender);
+    dbms_output.put_line('gender' || ' ' || gender);
+    gender := '';
+    gender_mapping('Angie', gender);
+    dbms_output.put_line('gender' || ' ' || gender);
     income := 3300;
   	annual_income(income, 'e');
     dbms_output.put_line(income);

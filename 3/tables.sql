@@ -1,5 +1,5 @@
 ﻿CREATE TABLE Employee (
-	emp_nr INT NOT NULL,
+	emp_nr VARCHAR(9) NOT NULL,
 	name VARCHAR(31), -- surname, forname
 	dob VARCHAR(8),  -- yy/mm/dd
 	job_title VARCHAR(63),
@@ -38,7 +38,7 @@ CREATE TABLE Gender (
 );
 
 CREATE TABLE Identifier (
-	staff_nr INTEGER,
+	staff_nr INTEGER PRIMARY KEY,
 	source_table VARCHAR(1), -- e = Employee, w = Worker
 	pk VARCHAR(63) -- Employee: emp_nr, Worker: Forename + Surname
 );
