@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION min_max_scale(v IN INT, new_min IN INT, new_max IN IN
 	IS new_v INT;
 
 BEGIN 
-	new_v := ((v - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;	-- min max impl
+	new_v := ((v - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min; -- min max impl
 	RETURN(new_v); 
 
 END min_max_scale;

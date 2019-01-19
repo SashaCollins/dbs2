@@ -1,12 +1,12 @@
 --SELECT REGEXP_SUBSTR('Bauer, Hans',
---	'([a-Z[:space:]]+), ([a-Z[:space:]]+)') AS name
---FROM DUAL;	-- not needed
+--  '([a-Z[:space:]]+), ([a-Z[:space:]]+)') AS name
+--FROM DUAL;  -- not needed
 
 SET SERVEROUTPUT ON;
 
 -- private function
 CREATE OR REPLACE FUNCTION generate_id(digits IN INTEGER)
-RETURN INTEGER 
+RETURN INTEGER
 IS
 	new_id INTEGER;
 	max_nr INTEGER := 9;
@@ -30,18 +30,18 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE get_staffnr(identify IN VARCHAR, source IN VARCHAR, staffnr OUT INTEGER, exist OUT BOOLEAN)
-IS	
+IS
 	results INTEGER;
 BEGIN
 	SELECT COUNT(*) INTO results FROM Identifier WHERE pk = identify AND source_table = source;
 	
 	IF results = 0 THEN
 		staffnr := -1;
-	WHILE staffnr = -1 OR results != 0 LOOP
-		staffnr := generate_id(6);
-		SELECT COUNT(*) INTO results FROM Identifier WHERE staff_nr = staffnr;
-	END LOOP;
-	
+		WHILE staffnr = -1 OR results != 0 LOOP
+			staffnr := generate_id(6);
+			SELECT COUNT(*) INTO results FROM Identifier WHERE staff_nr = staffnr;
+		END LOOP;
+		
 		exist := FALSE;
 		INSERT INTO Identifier VALUES (staffnr, source, identify);
 	ELSE
@@ -54,10 +54,10 @@ END;
 CREATE OR REPLACE PROCEDURE split_name(staff_name IN VARCHAR, surname IN OUT VARCHAR, forename IN OUT VARCHAR)
 IS
 BEGIN
-	surname	:= '';
+	surname  := '';
 	forename := '';
 	SELECT SUBSTR(staff_name, 1, INSTR(staff_name, ',', 1, 1) - 1),
-			 SUBSTR(staff_name, INSTR(staff_name, ',', 1, 1) + 2)
+		   SUBSTR(staff_name, INSTR(staff_name, ',', 1, 1) + 2)
 	INTO surname, forename
 	FROM DUAL;
 END;
@@ -96,7 +96,7 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION dob_age_emp(date_dob IN VARCHAR)
-RETURN INTEGER 
+RETURN INTEGER
 IS
 	age INTEGER;
 	
@@ -112,12 +112,12 @@ IS
 	
 	year_diff INTEGER;
 	month_diff INTEGER;
-	day_diff INTEGER;	
+	day_diff INTEGER;
 BEGIN
 	-- Get Current Time
 	SELECT to_char(sysdate, 'yy/mm/dd') INTO date_cur FROM DUAL;
 	
-	--	Split Date into day, month and year
+	-- Split Date into day, month and year
 	split_date_emp(date_dob, year_dob, month_dob, day_dob);
 	split_date_emp(date_cur, year_cur, month_cur, day_cur);
 	
@@ -130,7 +130,7 @@ BEGIN
 	ELSE
 		age := year_diff;
 	END IF;
-		 
+	
 	-- diff negative? Didn't have his birthday this year so remove it.
 	month_diff := month_cur - month_dob;
 	IF (month_diff < 0) THEN
@@ -169,7 +169,7 @@ END;
 
 CREATE OR REPLACE FUNCTION dob_age_wor(date_dob IN VARCHAR)
 RETURN INTEGER
-IS	
+IS
 	year_dob INTEGER;
 	month_dob INTEGER;
 	year_cur INTEGER;
@@ -182,7 +182,7 @@ BEGIN
 	-- Get Current Time
 	SELECT to_char(sysdate, 'mm.yy') INTO date_cur FROM DUAL;
 	
-	--	Split Date into day, month and year
+	--  Split Date into day, month and year
 	split_date_wor(date_dob, year_dob, month_dob);
 	split_date_wor(date_cur, year_cur, month_cur);
 	
@@ -206,18 +206,18 @@ END;
 -- this is only for worker
 CREATE OR REPLACE FUNCTION gender_mapping(fname IN VARCHAR)
 RETURN VARCHAR
-IS	
+IS
 	answer INTEGER;
 	gen VARCHAR(1);
-BEGIN	
+BEGIN
 	-- if name only once in TABLE Gender then use this gender -> 1, 2
 	-- else gender is unknown -> 0
 	
 	SELECT COUNT(*)
 	INTO answer
-	FROM Gender g 
+	FROM Gender g
 	WHERE g.forename = fname;
-	 
+	
 	IF answer = 1 THEN
 		SELECT g.gender INTO gen
 		FROM Gender g
@@ -231,7 +231,7 @@ END;
 
 -- this is only for employees
 CREATE OR REPLACE FUNCTION gender_evaluation(fname IN VARCHAR, gen IN VARCHAR)
-RETURN VARCHAR 
+RETURN VARCHAR
 IS
 	gen_nr VARCHAR(1);
 	answer INTEGER;
@@ -243,7 +243,7 @@ BEGIN
 	
 	IF gen = 'weiblich' THEN
 		gen_nr := '1';
-	ELSE	
+	ELSE
 		IF gen = 'männlich' THEN
 			gen_nr := '2';
 		END IF;
@@ -251,7 +251,7 @@ BEGIN
 	
 	SELECT COUNT(*)
 	INTO answer
-	FROM Gender g 
+	FROM Gender g
 	WHERE g.forename = fname AND g.gender = gen_nr;
 	
 	IF answer = 0 THEN
@@ -264,7 +264,7 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION get_jobcode(job_title IN VARCHAR)
-RETURN INTEGER 
+RETURN INTEGER
 IS
 	job_code INTEGER;
 	results INTEGER;
@@ -273,27 +273,27 @@ BEGIN
 	
 	IF results = 0 THEN
 		job_code := -1;
-	WHILE job_code = -1 OR results != 0 LOOP
-		job_code := generate_id(5);
-		SELECT COUNT(*) INTO results FROM Jobcode WHERE code = job_code;
-	END LOOP;
-	INSERT INTO Jobcode VALUES (job_code, job_title);
+		WHILE job_code = -1 OR results != 0 LOOP
+			job_code := generate_id(5);
+			SELECT COUNT(*) INTO results FROM Jobcode WHERE code = job_code;
+		END LOOP;
+		INSERT INTO Jobcode VALUES (job_code, job_title);
 	ELSE
-	SELECT code INTO job_code FROM Jobcode WHERE description = job_title;
+		SELECT code INTO job_code FROM Jobcode WHERE description = job_title;
 	END IF;
-	RETURN job_code; 
+	RETURN job_code;
 END;
 /
 
 CREATE OR REPLACE FUNCTION annual_income(income IN DOUBLE PRECISION, source IN VARCHAR)
 RETURN DOUBLE PRECISION
-IS 
+IS
 	year_income DOUBLE PRECISION;
 BEGIN
 	IF (source = 'e') THEN
 		year_income := income * 12;
-	ELSE 
-		IF (source = 'w')	THEN
+	ELSE
+		IF (source = 'w') THEN
 			year_income := income * 12 * (8 * 5 * 4.3);
 		END IF;
 	END IF;
@@ -308,7 +308,7 @@ IS
 
 	-- to save
 	staffnr INTEGER;
-	sname	VARCHAR(31);
+	sname VARCHAR(31);
 	fname VARCHAR(31);
 	a INTEGER;
 	jobcode INTEGER;
@@ -317,14 +317,14 @@ IS
 BEGIN
 	FOR employee IN (SELECT * FROM Employee) LOOP
 		-- procedures (multiple output values)
-		get_staffnr(employee.emp_nr, 'e', staffnr, entry_exist);	-- get or gen staff nr
-		split_name(employee.name, sname, fname);	-- split name
+		get_staffnr(employee.emp_nr, 'e', staffnr, entry_exist); -- get or gen staff nr
+		split_name(employee.name, sname, fname); -- split name
 		
 		-- functions
-		a := dob_age_emp(employee.dob);	-- calc age
-		gen := gender_evaluation(fname, employee.gender);	-- get 1/2 and update Gender Tbl 
-		jobcode := get_jobcode(employee.job_title);	-- get or gen job code
-		income := annual_income(employee.salary_month, 'e');	-- calc income	 
+		a := dob_age_emp(employee.dob); -- calc age
+		gen := gender_evaluation(fname, employee.gender); -- get 1/2 and update Gender Tbl
+		jobcode := get_jobcode(employee.job_title); -- get or gen job code
+		income := annual_income(employee.salary_month, 'e'); -- calc income
 		
 		IF entry_exist THEN
 			UPDATE Staff s
@@ -338,7 +338,7 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE merge_worker 
+CREATE OR REPLACE PROCEDURE merge_worker
 IS
 	identify VARCHAR(64);
 	exist BOOLEAN;
@@ -361,7 +361,7 @@ BEGIN
 			UPDATE Staff s
 			SET s.age = a, s.gender = gen, s.job_code = jobcode, s.income_year = income
 			WHERE s.staff_nr = staffnr;
-		ELSE	
+		ELSE
 			INSERT INTO Staff
 			VALUES (staffnr, worker.surname, worker.forename, a, gen, jobcode, income);
 		END IF;
@@ -370,7 +370,7 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE merge_staff
-IS	
+IS
 BEGIN
 	merge_employees();
 	merge_worker();
