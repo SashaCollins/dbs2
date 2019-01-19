@@ -1,9 +1,9 @@
 CREATE TABLE People (
-  person_id INT NOT NULL,
-  person_name VARCHAR(63),
-  person_age INT,
-  person_place VARCHAR(63),
-  CONSTRAINT pers_id PRIMARY KEY (person_id)
+	person_id INT NOT NULL,
+	person_name VARCHAR(63),
+	person_age INT,
+	person_place VARCHAR(63),
+	CONSTRAINT pers_id PRIMARY KEY (person_id)
 );
 
 INSERT INTO People VALUES(0, 'Hans', 34, 'Bonn');
@@ -18,12 +18,11 @@ INSERT INTO People VALUES(8, 'Günther', 63, 'Ulm');
 INSERT INTO People VALUES(9, 'Sebastian', 19, 'Ingolstadt');
 
 CREATE OR REPLACE FUNCTION min_max_scale(v IN INT, new_min IN INT, new_max IN INT, old_min IN INT, old_max IN INT) 
-   RETURN INT
-   IS new_v INT;
+	RETURN INT
+	IS new_v INT;
 
 BEGIN 
-
-	new_v := ((v - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;  -- min max impl
+	new_v := ((v - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min;	-- min max impl
 	RETURN(new_v); 
 
 END min_max_scale;
@@ -37,8 +36,7 @@ CREATE OR REPLACE PROCEDURE MinMax_Scaling (new_min INT, new_max INT) IS
 BEGIN
 	SELECT MIN(person_age) as min_age, MAX(person_age) as max_age INTO old_min, old_max FROM People; -- get min and max
 
-	FOR person IN (SELECT * FROM People)
-	LOOP
+	FOR person IN (SELECT * FROM People) LOOP
 		new_age := min_max_scale(person.person_age, new_min, new_max, old_min, old_max);
 		UPDATE People SET person_age = new_age WHERE person_id = person.person_id;
 	END LOOP;
