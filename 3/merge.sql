@@ -1,4 +1,4 @@
---SELECT REGEXP_SUBSTR('Bauer, Hans',
+﻿--SELECT REGEXP_SUBSTR('Bauer, Hans',
 --  '([a-Z[:space:]]+), ([a-Z[:space:]]+)') AS name
 --FROM DUAL;  -- not needed
 
@@ -244,7 +244,7 @@ BEGIN
 	IF gen = 'weiblich' THEN
 		gen_nr := '1';
 	ELSE
-		IF gen = 'm�nnlich' THEN
+		IF gen = 'männlich' THEN
 			gen_nr := '2';
 		END IF;
 	END IF;
